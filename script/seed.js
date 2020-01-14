@@ -1,18 +1,94 @@
 'use strict'
 
 const db = require('../server/db')
-const {User} = require('../server/db/models')
+const {User, Product, CartItems, Order} = require('../server/db/models')
+
+const cartItemsToSeed = [
+  {
+    userId: 1,
+    productId: 1,
+    quantity: 2
+  },
+  {
+    userId: 1,
+    productId: 2,
+    quantity: 1
+  },
+  {
+    userId: 1,
+    productId: 4,
+    quantity: 2
+  },
+  {
+    userId: 1,
+    productId: 1,
+    quantity: 2,
+    orderId: 1
+  }
+]
+
+const ordersToSeed = [
+  {userId: 1, status: 'complete'},
+  {userId: 2, status: 'in process'}
+]
+
+const usersToSeed = [
+  {email: 'cody@email.com', password: '123'},
+  {email: 'murphy@email.com', password: '123'}
+]
+
+const productsToSeed = [
+  {
+    name: 'Bruise salve',
+    description:
+      'Soothe your woes after drunken bar fights with organic arnica and shea butter',
+    price: 1499,
+    category: 'body'
+  },
+  {
+    name: 'Scented Candle',
+    description: 'Calming scents of burning wood chips and neroli',
+    price: 5399,
+    category: 'home'
+  },
+  {
+    name: 'Shower Gel',
+    description: 'Lavender scented gel with aloe base',
+    price: 899,
+    category: 'body'
+  },
+  {
+    name: 'Eye Cream',
+    description: 'Roll back the years with pig placenta',
+    price: 4499,
+    category: 'face'
+  },
+  {
+    name: 'Hand Cream',
+    description: 'Rich hand cream with eucalyptus extract',
+    price: 1499,
+    category: 'body'
+  }
+]
 
 async function seed() {
   await db.sync({force: true})
   console.log('db synced!')
 
-  const users = await Promise.all([
-    User.create({email: 'cody@email.com', password: '123'}),
-    User.create({email: 'murphy@email.com', password: '123'})
-  ])
+  const users = await Promise.all(usersToSeed.map(user => User.create(user)))
+  const products = await Promise.all(
+    productsToSeed.map(product => Product.create(product))
+  )
+  const orders = await Promise.all(
+    ordersToSeed.map(order => Order.create(order))
+  )
+  const cartItems = await Promise.all(
+    cartItemsToSeed.map(items => CartItems.create(items))
+  )
 
   console.log(`seeded ${users.length} users`)
+  console.log(`seeded ${products.length} products`)
+
   console.log(`seeded successfully`)
 }
 
