@@ -1,12 +1,15 @@
 import React from 'react'
 import {connect} from 'react-redux'
 // import {Link} from 'react-router-dom'
-import {fetchCart} from '../store/cart'
+import {fetchCart, updateCart} from '../store/cart'
 
 class Cart extends React.Component {
   constructor(props) {
     super(props)
-    this.state = {}
+    this.state = {
+      id: null,
+      quantity: null
+    }
   }
 
   componentDidMount() {
@@ -14,15 +17,15 @@ class Cart extends React.Component {
   }
 
   handleChange = evt => {
-    // let newQty = evt.target.value
-    evt.target.name === 'quantity' && console.log(this.state)
-    //   ? this.state.forEach(item => {
-    //       if (item.id === evt.trget.id) {
-    //         console.log('before change', item)
-    //         item.quantity = newQty
-    //         console.log('after change', item)
-    //       }
-    //     })
+    let newQty = evt.target.value
+    const id = evt.target.id
+    this.setState({id, quantity: newQty})
+  }
+
+  handleSubmitQty = evt => {
+    evt.preventDefault()
+    const updateObj = this.state
+    this.props.updateQty(updateObj)
   }
 
   render() {
@@ -41,7 +44,7 @@ class Cart extends React.Component {
                 <div key={item.id}>
                   <img src={item.product.imageUrl} width="200px" />
                   <h4>{item.product.name}</h4>
-                  <form>
+                  <form onSubmit={this.handleSubmitQty}>
                     <input
                       type="text"
                       name="quantity"
@@ -52,16 +55,17 @@ class Cart extends React.Component {
                     <button type="submit">Update</button>
                   </form>
                   <p>{`$${(item.product.price / 100).toFixed(2)}`}</p>
+                  <button name="delete">Delete</button>
                 </div>
               ))}
             </div>
-            {console.log('cart', this.props.cart)}
           </div>
         ) : (
           <div>
             <h1>There are no items in the cart</h1>
           </div>
         )}
+        <button name="checkout">CHECKOUT</button>
       </React.Fragment>
     )
   }
@@ -74,10 +78,13 @@ const mapState = state => {
 }
 
 const mapDispatch = (dispatch, ownProps) => {
+  const userId = ownProps.match.params.userId
   return {
     setCart: () => {
-      const userId = ownProps.match.params.userId
       dispatch(fetchCart(userId))
+    },
+    updateQty: updateObj => {
+      dispatch(updateCart(userId, updateObj))
     }
   }
 }

@@ -14,8 +14,6 @@ export class AllProducts extends React.Component {
 
   render() {
     const products = this.props.products
-    // console.log('Products from redux store: ', products);
-    console.log('Redux store props: ', this.props)
 
     return (
       <div>
