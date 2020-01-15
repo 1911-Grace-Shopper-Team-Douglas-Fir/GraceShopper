@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {fetchSingleProduct} from '../store/singleProduct'
+import {addProduct} from '../store/cart'
 
 class SingleProduct extends React.Component {
   constructor() {
@@ -16,6 +17,7 @@ class SingleProduct extends React.Component {
   }
   render() {
     const product = this.props.singleProduct
+    console.log('in SingleProduct', this.props)
 
     return (
       <div>
@@ -39,9 +41,12 @@ class SingleProduct extends React.Component {
   }
   handleSubmit(event) {
     event.preventDefault()
-    this.setState({
-      quantity: 1
-    })
+    const productToAdd = {
+      quantity: this.state.quantity,
+      productId: this.props.singleProduct.id,
+      userId: this.props.user.id
+    }
+    this.props.addProduct(productToAdd)
   }
   handleChange(event) {
     this.setState({
@@ -52,13 +57,15 @@ class SingleProduct extends React.Component {
 
 const mapState = state => {
   return {
-    singleProduct: state.singleProduct
+    singleProduct: state.singleProduct,
+    user: state.user
   }
 }
 
 const mapDispatch = dispatch => {
   return {
-    fetchSingleProduct: productId => dispatch(fetchSingleProduct(productId))
+    fetchSingleProduct: productId => dispatch(fetchSingleProduct(productId)),
+    addProduct: product => dispatch(addProduct(product))
   }
 }
 

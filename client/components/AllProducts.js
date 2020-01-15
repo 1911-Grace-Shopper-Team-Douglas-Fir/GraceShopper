@@ -1,32 +1,48 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {fetchProducts} from '../store/allProducts'
+import {addProduct} from '../store/cart'
 
 export class AllProducts extends React.Component {
   constructor() {
     super()
     this.state = {}
+    this.handleSubmit = this.handleSubmit.bind(this)
   }
 
   componentDidMount() {
     this.props.fetchProducts()
   }
 
+  handleSubmit(event) {
+    event.preventDefault()
+    const productToAdd = {
+      quantity: 1,
+      productId: event.target.id,
+      userId: this.props.user.id
+    }
+    this.props.addProduct(productToAdd)
+  }
+
   render() {
     const products = this.props.products
-
     return (
       <div>
         <ul>
-          Hello World
           {products &&
             products.map(product => (
-              <div>
-                <div>{product.name}</div>
-                <div>{product.description}</div>
-                <div>{product.price}</div>
-                <div>{product.imageUrl}</div>
-                <div>{product.category}</div>
+              <div className="product-container" key={product.id}>
+                <h1>{product.name}</h1>
+                <p>{product.description}</p>
+                <button
+                  id={product.id}
+                  type="submit"
+                  onClick={this.handleSubmit}
+                >
+                  {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
+                </button>
+                <h2>{product.category}</h2>
+                <img src={product.imageUrl} />
               </div>
             ))}
         </ul>
@@ -37,13 +53,15 @@ export class AllProducts extends React.Component {
 
 const mapState = state => {
   return {
-    products: state.allProducts
+    products: state.allProducts,
+    user: state.user
   }
 }
 
 const mapDispatch = dispatch => {
   return {
-    fetchProducts: () => dispatch(fetchProducts())
+    fetchProducts: () => dispatch(fetchProducts()),
+    addProduct: product => dispatch(addProduct(product))
   }
 }
 
