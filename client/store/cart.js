@@ -2,11 +2,19 @@ import axios from 'axios'
 
 // Action creator
 const SET_CART = 'SET_CART'
+const ADD_CART_ITEM = 'ADD_CART_ITEM'
 
 export const setCart = cart => {
   return {
     type: SET_CART,
     cart: cart
+  }
+}
+
+export const addCartItem = item => {
+  return {
+    type: ADD_CART_ITEM,
+    item
   }
 }
 
@@ -22,11 +30,24 @@ export const fetchCart = userId => {
   }
 }
 
+export const addProduct = product => {
+  return async dispatch => {
+    try {
+      const response = await axios.post('/api/cart', product)
+      dispatch(addCartItem(response.data))
+    } catch (err) {
+      console.log(err)
+    }
+  }
+}
+
 // Reducer
 const cartReducer = (state = [], action) => {
   switch (action.type) {
     case SET_CART:
       return [...action.cart]
+    case ADD_CART_ITEM:
+      return [...state, action.item]
     default:
       return state
   }
