@@ -3,6 +3,7 @@ module.exports = router
 
 // Users router
 router.use('/users', require('./users'))
+router.use('/products', require('./products'))
 
 // // All Products router
 router.use('/products', require('./allProducts'))
