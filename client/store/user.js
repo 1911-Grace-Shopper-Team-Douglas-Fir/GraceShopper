@@ -6,6 +6,7 @@ import history from '../history'
  */
 const GET_USER = 'GET_USER'
 const REMOVE_USER = 'REMOVE_USER'
+const UPDATE_USER = 'UPDATE_USER'
 
 /**
  * INITIAL STATE
@@ -17,7 +18,7 @@ let defaultUser = {}
  */
 const getUser = user => ({type: GET_USER, user})
 const removeUser = () => ({type: REMOVE_USER})
-
+const updateUser = user => ({type: UPDATE_USER, user})
 /**
  * THUNK CREATORS
  */
@@ -26,7 +27,7 @@ export const me = () => async dispatch => {
   try {
     const res = await axios.get('/auth/me')
     const sid = await axios.get('/auth/sid')
-    if (!res.data) defaultUser = {id: sid}
+    if (!res.data) defaultUser = {sid: sid.data}
     dispatch(getUser(res.data || defaultUser))
   } catch (err) {
     console.error(err)
@@ -59,6 +60,18 @@ export const logout = () => async dispatch => {
   }
 }
 
+export const addUserInfo = (user, userId) => {
+  return async dispatch => {
+    try {
+      const response = await axios.put(`/api/users/${userId}`, user)
+      console.log('in Thunk', user, userId)
+      dispatch(updateUser(response.data))
+    } catch (err) {
+      console.log(err)
+    }
+  }
+}
+
 /**
  * REDUCER
  */
@@ -68,6 +81,8 @@ export default function(state = defaultUser, action) {
       return action.user
     case REMOVE_USER:
       return defaultUser
+    case UPDATE_USER:
+      return action.user
     default:
       return state
   }

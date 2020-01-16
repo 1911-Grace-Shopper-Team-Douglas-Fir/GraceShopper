@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
-// import {Link} from 'react-router-dom'
 import {fetchCart, updateCart, deleteItem} from '../store/cart'
+import {Link} from 'react-router-dom'
 
 class Cart extends React.Component {
   constructor(props) {
@@ -75,7 +75,9 @@ class Cart extends React.Component {
             <h1>There are no items in the cart</h1>
           </div>
         )}
-        <button name="checkout">CHECKOUT</button>
+        <Link to="/customerauth">
+          <button name="checkout">CHECKOUT</button>
+        </Link>
       </React.Fragment>
     )
   }

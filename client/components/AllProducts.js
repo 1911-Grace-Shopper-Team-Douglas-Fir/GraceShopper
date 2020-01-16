@@ -19,7 +19,8 @@ export class AllProducts extends React.Component {
     const productToAdd = {
       quantity: 1,
       productId: event.target.id,
-      userId: this.props.user.id
+      ...(this.props.user.id && {userId: this.props.user.id}),
+      ...(this.props.user.sid && {sessionId: this.props.user.sid})
     }
     this.props.addProduct(productToAdd)
   }
