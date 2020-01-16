@@ -8,7 +8,7 @@ import {
   UserHome,
   AllProducts,
   SingleProduct,
-  Navbar
+  Checkout
 } from './components'
 import {me} from './store'
 import Cart from './components/Cart'
@@ -25,30 +25,24 @@ class Routes extends Component {
     const {isLoggedIn} = this.props
 
     return (
-      <div>
-        {this.props.location.pathname !== '/customerauth' && <Navbar />}
-        <Switch>
-          {/* Routes placed here are available to all visitors */}
-          <Route exact path="/" component={AllProducts} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={Signup} />
-          <Route path="/cart/:userId" component={Cart} />
-          <Route
-            path="/products/product/:productId"
-            component={SingleProduct}
-          />
-          <Route path="/customerauth" component={loginSignup} />
+      <Switch>
+        {/* Routes placed here are available to all visitors */}
+        <Route exact path="/" component={AllProducts} />
+        <Route path="/checkout" component={Checkout} />
+        <Route path="/login" component={Login} />
+        <Route path="/signup" component={Signup} />
+        <Route path="/cart/:userId" component={Cart} />
+        <Route path="/products/product/:productId" component={SingleProduct} />
 
-          {isLoggedIn && (
-            <Switch>
-              {/* Routes placed here are only available after logging in */}
-              <Route path="/home" component={UserHome} />
-            </Switch>
-          )}
-          {/* Displays our Login component as a fallback */}
-          <Route component={Login} />
-        </Switch>
-      </div>
+        {isLoggedIn && (
+          <Switch>
+            {/* Routes placed here are only available after logging in */}
+            <Route path="/home" component={UserHome} />
+          </Switch>
+        )}
+        {/* Displays our Login component as a fallback */}
+        <Route component={Login} />
+      </Switch>
     )
   }
 }
