@@ -2,9 +2,17 @@ import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import {withRouter, Route, Switch} from 'react-router-dom'
 import PropTypes from 'prop-types'
-import {Login, Signup, UserHome, AllProducts, SingleProduct} from './components'
+import {
+  Login,
+  Signup,
+  UserHome,
+  AllProducts,
+  SingleProduct,
+  Navbar
+} from './components'
 import {me} from './store'
 import Cart from './components/Cart'
+import loginSignup from './components/loginSignup'
 /**
  * COMPONENT
  */
@@ -17,23 +25,30 @@ class Routes extends Component {
     const {isLoggedIn} = this.props
 
     return (
-      <Switch>
-        {/* Routes placed here are available to all visitors */}
-        <Route exact path="/" component={AllProducts} />
-        <Route path="/login" component={Login} />
-        <Route path="/signup" component={Signup} />
-        <Route path="/cart/:userId" component={Cart} />
-        <Route path="/products/product/:productId" component={SingleProduct} />
+      <div>
+        {this.props.location.pathname !== '/customerauth' && <Navbar />}
+        <Switch>
+          {/* Routes placed here are available to all visitors */}
+          <Route exact path="/" component={AllProducts} />
+          <Route path="/login" component={Login} />
+          <Route path="/signup" component={Signup} />
+          <Route path="/cart/:userId" component={Cart} />
+          <Route
+            path="/products/product/:productId"
+            component={SingleProduct}
+          />
+          <Route path="/customerauth" component={loginSignup} />
 
-        {isLoggedIn && (
-          <Switch>
-            {/* Routes placed here are only available after logging in */}
-            <Route path="/home" component={UserHome} />
-          </Switch>
-        )}
-        {/* Displays our Login component as a fallback */}
-        <Route component={Login} />
-      </Switch>
+          {isLoggedIn && (
+            <Switch>
+              {/* Routes placed here are only available after logging in */}
+              <Route path="/home" component={UserHome} />
+            </Switch>
+          )}
+          {/* Displays our Login component as a fallback */}
+          <Route component={Login} />
+        </Switch>
+      </div>
     )
   }
 }
