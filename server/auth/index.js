@@ -42,4 +42,12 @@ router.get('/me', (req, res) => {
   res.json(req.user)
 })
 
+router.get('/sid', async (req, res, next) => {
+  try {
+    res.send(req.session.id)
+  } catch (error) {
+    next(error)
+  }
+})
+
 router.use('/google', require('./google'))
