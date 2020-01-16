@@ -29,3 +29,11 @@ form div {
   margin: 5px;
   width: 50rem;
 }
+
+.customerauth-style {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 20px;
+}

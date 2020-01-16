@@ -12,6 +12,7 @@ import {
 } from './components'
 import {me} from './store'
 import Cart from './components/Cart'
+import loginSignup from './components/loginSignup'
 /**
  * COMPONENT
  */
