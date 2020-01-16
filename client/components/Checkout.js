@@ -1,6 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
 import {addUserInfo} from '../store/user'
+import TakeMoney from './TakeMoney'
 
 class Checkout extends React.Component {
   constructor() {
@@ -50,6 +51,9 @@ class Checkout extends React.Component {
             <button type="submit">Submit</button>
           </div>
         </form>
+        <div>
+          <TakeMoney />
+        </div>
       </div>
     )
   }
