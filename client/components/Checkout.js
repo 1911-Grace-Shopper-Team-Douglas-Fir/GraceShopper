@@ -76,10 +76,14 @@ const mapState = state => {
   }
 }
 
-const mapDispatch = dispatch => {
-  return {
-    addUserInfo: (userInfo, userId) => dispatch(addUserInfo(userInfo, userId))
-  }
-}
+//const mapDispatch = dispatch => {
+//  return {
+//    addUserInfo: (userInfo, userId) => dispatch(addUserInfo(userInfo, userId))
+//    //addUserInfo: (...args) => dispatch(addUserInfo(...args))
+//  }
+//}
+
+const mapDispatch = { addUserInfo }
+
 
 export default connect(mapState, mapDispatch)(Checkout)

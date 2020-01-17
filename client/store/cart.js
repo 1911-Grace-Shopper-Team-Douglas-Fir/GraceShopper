@@ -2,7 +2,6 @@ import axios from 'axios'
 
 // Action creator
 const SET_CART = 'SET_CART'
-const UPDATE_CART = 'UPDATE_CART'
 const ADD_CART_ITEM = 'ADD_CART_ITEM'
 const DELETE_CART_ITEM = 'DELETE_CART_ITEM'
 
@@ -10,13 +9,6 @@ export const setCart = cart => {
   return {
     type: SET_CART,
     cart: cart
-  }
-}
-
-export const editCart = cartItem => {
-  return {
-    type: UPDATE_CART,
-    cartItem
   }
 }
 
@@ -48,8 +40,10 @@ export const fetchCart = userId => {
 export const updateCart = (userId, cartObj) => {
   return async dispatch => {
     try {
+      // /api/cart/:userId
+      // /api/users/:userId/cart
       const response = await axios.put(`/api/cart/${userId}`, cartObj)
-      dispatch(editCart(response.data))
+      dispatch(setCart(response.data))
     } catch (error) {
       console.log(error)
     }
@@ -82,9 +76,7 @@ export const deleteItem = productId => {
 const cartReducer = (state = [], action) => {
   switch (action.type) {
     case SET_CART:
-      return [...action.cart]
-    case UPDATE_CART:
-      return [...action.cartItem]
+      return action.cart
     case ADD_CART_ITEM:
       return [...state, action.item]
     case DELETE_CART_ITEM:
