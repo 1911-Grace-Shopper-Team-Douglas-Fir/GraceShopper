@@ -3,31 +3,48 @@ import PropTypes from 'prop-types'
 import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {logout} from '../store'
+import {FaTree} from 'react-icons/fa'
+import {MdShoppingCart} from 'react-icons/md'
 
 const Navbar = ({handleClick, isLoggedIn, user}) => (
-  <div>
-    <Link to="/">
-      <h1>DOUGLAS FIR APOTHECARY</h1>
-    </Link>
-    <nav>
-      {isLoggedIn ? (
-        <div>
-          {/* The navbar will show these links after you log in */}
-          <Link to="/home">Home</Link>
-          <a href="#" onClick={handleClick}>
-            Logout
-          </a>
+  <div id="nav-container">
+    <div id="logo-container">
+      <Link to="/">
+        <div id="logo-left">
+          <h1 id="logo">DOUGLAS FIR </h1>
         </div>
-      ) : (
-        <div>
-          {/* The navbar will show these links before you log in */}
-          <Link to="/login">Login</Link>
-          <Link to="/signup">Sign Up</Link>
+        <div id="logo-tree">
+          <FaTree size="60" id="logo" />
         </div>
-      )}
-      <Link to={`/cart/${user.sid && user.id}`}>Cart</Link>
-    </nav>
-    <hr />
+        <div id="logo-right">
+          <h1 id="logo">APOTHECARY</h1>
+        </div>
+      </Link>
+    </div>
+
+    <div id="nav-sub-container">
+      <nav>
+        {isLoggedIn ? (
+          <div>
+            {/* The navbar will show these links after you log in */}
+            <a href="#" onClick={handleClick}>
+              Logout
+            </a>
+            <Link to={`/cart/${user.sid && user.id}`}>
+              <MdShoppingCart size="30" />
+            </Link>
+          </div>
+        ) : (
+          <div>
+            {/* The navbar will show these links before you log in */}
+            <Link to="/login">Login</Link>|<Link to="/signup">Sign Up</Link>
+            <Link to={`/cart/${user.sid && user.id}`}>
+              <MdShoppingCart size="30" />
+            </Link>
+          </div>
+        )}
+      </nav>
+    </div>
   </div>
 )
 
