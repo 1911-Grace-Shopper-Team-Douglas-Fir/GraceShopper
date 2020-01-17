@@ -34,10 +34,13 @@ export const removeItem = productId => {
   }
 }
 // Thunk Middleware
-export const fetchCart = userId => {
+export const fetchCart = id => {
   return async dispatch => {
     try {
-      const response = await axios.get(`/api/cart/${userId}`)
+      //   let reqObj = typeof id === 'number' ? {userId: id} : {sessionId: id}
+      //   console.log(reqObj)
+
+      const response = await axios.get(`/api/cart/${id}`)
       dispatch(setCart(response.data))
     } catch (err) {
       console.log(err)

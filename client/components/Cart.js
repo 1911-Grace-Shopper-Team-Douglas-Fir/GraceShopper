@@ -13,7 +13,10 @@ class Cart extends React.Component {
   }
 
   componentDidMount() {
-    this.props.setCart()
+    this.props.setCart(
+      this.props.isLoggedIn ? this.props.user.id : this.props.user.sid
+    )
+    console.log(this.props.isLoggedIn, this.props.user)
   }
 
   handleChange = evt => {
@@ -85,15 +88,16 @@ class Cart extends React.Component {
 
 const mapState = state => {
   return {
-    cart: state.cart
+    cart: state.cart,
+    isLoggedIn: !!state.user.id,
+    user: state.user
   }
 }
 
-const mapDispatch = (dispatch, ownProps) => {
-  const userId = ownProps.match.params.userId
+const mapDispatch = dispatch => {
   return {
-    setCart: () => {
-      dispatch(fetchCart(userId))
+    setCart: id => {
+      dispatch(fetchCart(id))
     },
     updateQty: updateObj => {
       dispatch(updateCart(userId, updateObj))

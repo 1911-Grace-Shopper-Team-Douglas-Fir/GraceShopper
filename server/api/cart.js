@@ -1,14 +1,17 @@
 const router = require('express').Router()
 const {CartItems, Product} = require('../db/models')
 
-router.get('/:userId', async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
+  let id =
+    typeof Number(req.params.id) === 'number'
+      ? {userId: req.params.id, orderId: null}
+      : {sessionId: req.params.id, orderId: null}
   try {
+    // const id = req.body.userId
+    //   ? {userId: req.body.userId, orderId: null}
+    //   : {sessionId: req.body.sessionId, userId: null, orderId: null}
     const cart = await CartItems.findAll({
-      where: {
-        ...(req.body.userId && {userId: req.body.userId}),
-        ...(req.body.sessionId && {sessionId: req.body.sessionId}),
-        orderId: null
-      },
+      where: id,
       include: [
         {
           model: Product
@@ -78,32 +81,36 @@ router.put('/:userId', async (req, res, next) => {
 // })
 
 router.post('/', async (req, res, next) => {
+  const update = req.body.userId
+    ? {userId: req.body.userId, productId: req.body.productId}
+    : {sessionId: req.body.sessionId, productId: req.body.productId}
+  const createNew = req.body.userId
+    ? {
+        userId: req.body.userId,
+        productId: req.body.productId,
+        quantity: req.body.quantity
+      }
+    : {
+        sessionId: req.body.sessionId,
+        productId: req.body.productId,
+        quantity: req.body.quantity
+      }
   try {
     let item = await CartItems.findOne({
-      where: {
-        ...(req.body.userId && {userId: req.body.userId}),
-        ...(req.body.sessionId && {sessionId: req.body.sessionId}),
-        productId: req.body.productId
-      }
+      where: update
     })
     if (item) {
       item.quantity += req.body.quantity
       await item.save()
     } else {
-      await CartItems.create({
-        quantity: req.body.quantity,
-        productId: req.body.productId,
-        ...(req.body.userId && {userId: req.body.userId}),
-        ...(req.body.sessionId && {sessionId: req.body.sessionId}),
-        orderId: null
-      })
+      await CartItems.create(createNew)
     }
+    let id =
+      typeof req.params.id === 'number'
+        ? {userId: req.params.id, orderId: null}
+        : {sessionId: req.params.id, orderId: null}
     const cart = await CartItems.findAll({
-      where: {
-        ...(req.body.userId && {userId: req.body.userId}),
-        ...(req.body.sessionId && {sessionId: req.body.sessionId}),
-        orderId: null
-      },
+      where: id,
       include: [
         {
           model: Product
