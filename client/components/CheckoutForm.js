@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import {CardElement, injectStripe} from 'react-stripe-elements'
 import axios from 'axios'
+import AddressForm from './AddressForm'
 
 class CheckoutForm extends Component {
   constructor(props) {
@@ -25,6 +26,7 @@ class CheckoutForm extends Component {
 
     return (
       <div className="checkout">
+        <AddressForm />
         <p>Would you like to complete the purchase?</p>
         <CardElement />
         <button onClick={this.submit}>Purchase</button>
