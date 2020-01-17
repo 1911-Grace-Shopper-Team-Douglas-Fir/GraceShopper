@@ -19,7 +19,8 @@ export class AllProducts extends React.Component {
     const productToAdd = {
       quantity: 1,
       productId: event.target.id,
-      userId: this.props.user.id
+      ...(this.props.user.id && {userId: this.props.user.id}),
+      ...(this.props.user.sid && {sessionId: this.props.user.sid})
     }
     this.props.addProduct(productToAdd)
   }
@@ -28,24 +29,29 @@ export class AllProducts extends React.Component {
     const products = this.props.products
     return (
       <div>
-        <ul>
-          {products &&
-            products.map(product => (
-              <div className="product-container" key={product.id}>
-                <h1>{product.name}</h1>
-                <p>{product.description}</p>
-                <button
-                  id={product.id}
-                  type="submit"
-                  onClick={this.handleSubmit}
-                >
-                  {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
-                </button>
-                <h2>{product.category}</h2>
-                <img src={product.imageUrl} />
-              </div>
-            ))}
-        </ul>
+        {products &&
+          products.map(product => (
+            <div
+              className="product-card"
+              style={{
+                backgroundImage: `url(${product.imageUrl})`,
+                backgroundSize: 250,
+                backgroundRepeat: 'no-repeat'
+              }}
+              key={product.id}
+            >
+              {/* <img className="product-img" src={product.imageUrl} /> */}
+              <p className="product-card-title">{product.name}</p>
+              <button
+                className="product-card-add-btn"
+                id={product.id}
+                type="submit"
+                onClick={this.handleSubmit}
+              >
+                {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
+              </button>
+            </div>
+          ))}
       </div>
     )
   }
