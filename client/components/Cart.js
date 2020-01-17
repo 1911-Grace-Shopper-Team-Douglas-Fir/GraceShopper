@@ -1,7 +1,7 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import {fetchCart, updateCart, deleteItem} from '../store/cart'
 import {Link} from 'react-router-dom'
-import {fetchCart, updateCart} from '../store/cart'
 
 class Cart extends React.Component {
   constructor(props) {
@@ -27,6 +27,10 @@ class Cart extends React.Component {
     const updateObj = this.state
     this.props.updateQty(updateObj)
     evt.target.innerText = 'added to cart'
+  }
+
+  handleDelete = productId => {
+    this.props.deleteItem(productId)
   }
 
   render() {
@@ -56,7 +60,12 @@ class Cart extends React.Component {
                     <button type="submit">Update</button>
                   </form>
                   <p>{`$${(item.product.price / 100).toFixed(2)}`}</p>
-                  <button name="delete">Delete</button>
+                  <button
+                    onClick={() => this.handleDelete(item.productId)}
+                    name="delete"
+                  >
+                    Delete
+                  </button>
                 </div>
               ))}
             </div>
@@ -88,6 +97,9 @@ const mapDispatch = (dispatch, ownProps) => {
     },
     updateQty: updateObj => {
       dispatch(updateCart(userId, updateObj))
+    },
+    deleteItem: productId => {
+      dispatch(deleteItem(productId))
     }
   }
 }
