@@ -37,9 +37,6 @@ export const removeItem = productId => {
 export const fetchCart = id => {
   return async dispatch => {
     try {
-      //   let reqObj = typeof id === 'number' ? {userId: id} : {sessionId: id}
-      //   console.log(reqObj)
-
       const response = await axios.get(`/api/cart/${id}`)
       dispatch(setCart(response.data))
     } catch (err) {
@@ -89,7 +86,7 @@ const cartReducer = (state = [], action) => {
     case UPDATE_CART:
       return [...action.cartItem]
     case ADD_CART_ITEM:
-      return [...state, action.item]
+      return [...action.item]
     case DELETE_CART_ITEM:
       return state.filter(product => product.productId !== action.productId)
     default:

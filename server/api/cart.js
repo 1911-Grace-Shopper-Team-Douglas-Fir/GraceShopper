@@ -7,9 +7,6 @@ router.get('/:id', async (req, res, next) => {
       ? {userId: req.params.id, orderId: null}
       : {sessionId: req.params.id, orderId: null}
   try {
-    // const id = req.body.userId
-    //   ? {userId: req.body.userId, orderId: null}
-    //   : {sessionId: req.body.sessionId, userId: null, orderId: null}
     const cart = await CartItems.findAll({
       where: id,
       include: [
@@ -28,19 +25,35 @@ router.get('/:id', async (req, res, next) => {
 router.put('/:userId', async (req, res, next) => {
   try {
     const entryId = req.body.id
-    const updateObj = {
-      ...(req.body.quantity && {quantity: req.body.quantity}),
-      ...(req.body.productId && {productId: req.body.productId}),
-      ...(req.body.userId && {userId: req.body.userId})
-    }
-    await CartItems.findByPk(entryId)
+    let updateObj =
+      typeof Number(req.params.userId) === 'number'
+        ? {
+            userId: req.params.userId,
+            quantity: req.body.quantity,
+            ...(req.body.productId && {productId: req.body.productId})
+          }
+        : {
+            sessionId: req.params.userId,
+            quantity: req.body.quantity,
+            ...(req.body.productId && {productId: req.body.productId})
+          }
+
+    // const updateObj = {
+    //   ...(req.body.quantity && {quantity: req.body.quantity}),
+    //   ...(req.body.productId && {productId: req.body.productId}),
+    //   ...(req.body.userId && {userId: req.body.userId})
+    // }
+
+    const cartItem = await CartItems.findByPk(entryId)
     await cartItem.update(updateObj)
+
+    let id =
+      typeof Number(req.params.userId) === 'number'
+        ? {userId: req.params.userId, orderId: null}
+        : {sessionId: req.params.userId, orderId: null}
+
     const cart = await CartItems.findAll({
-      where: {
-        ...(req.body.userId && {userId: req.body.userId}),
-        ...(req.body.sessionId && {sessionId: req.body.sessionId}),
-        orderId: null
-      },
+      where: id,
       include: [
         {
           model: Product
@@ -53,32 +66,6 @@ router.put('/:userId', async (req, res, next) => {
     console.log(error)
   }
 })
-
-// router.post('/', async (req, res, next) => {
-//   try {
-//     await CartItems.create({
-//       quantity: req.body.quantity,
-//       productId: req.body.productId,
-//       userId: req.body.userId,
-//       orderId: null
-//     })
-//     const cart = await CartItems.findAll({
-//       where: {
-//         userId: req.params.userId,
-//         orderId: null
-//       },
-//       include: [
-//         {
-//           model: Product
-//         }
-//       ],
-//       order: [['id', 'ASC']]
-//     })
-//     res.json(cart)
-//   } catch (err) {
-//     next(err)
-//   }
-// })
 
 router.post('/', async (req, res, next) => {
   const update = req.body.userId
@@ -105,10 +92,11 @@ router.post('/', async (req, res, next) => {
     } else {
       await CartItems.create(createNew)
     }
-    let id =
-      typeof req.params.id === 'number'
-        ? {userId: req.params.id, orderId: null}
-        : {sessionId: req.params.id, orderId: null}
+
+    const id = req.body.userId
+      ? {userId: req.body.userId, orderId: null}
+      : {sessionId: req.body.sessionId, orderId: null}
+
     const cart = await CartItems.findAll({
       where: id,
       include: [

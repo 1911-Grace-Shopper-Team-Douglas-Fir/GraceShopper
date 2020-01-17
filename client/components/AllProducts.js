@@ -16,12 +16,13 @@ export class AllProducts extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    const productToAdd = {
-      quantity: 1,
-      productId: event.target.id,
-      ...(this.props.user.id && {userId: this.props.user.id}),
-      ...(this.props.user.sid && {sessionId: this.props.user.sid})
-    }
+    let productToAdd = this.props.user.id
+      ? {userId: this.props.user.id, quantity: 1, productId: event.target.id}
+      : {
+          sessionId: this.props.user.sid,
+          quantity: 1,
+          productId: event.target.id
+        }
     this.props.addProduct(productToAdd)
   }
 
