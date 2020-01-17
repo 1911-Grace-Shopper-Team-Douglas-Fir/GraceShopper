@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const {CartItems, Product} = require('../db/models')
+const Sequelize = require('sequelize')
 
 router.get('/:userId', async (req, res, next) => {
   try {
@@ -53,36 +54,24 @@ router.put('/:userId', async (req, res, next) => {
 
 // router.post('/', async (req, res, next) => {
 //   try {
-//     await CartItems.create({
+//     const newCartItem = await CartItems.create({
 //       quantity: req.body.quantity,
 //       productId: req.body.productId,
 //       userId: req.body.userId,
 //       orderId: null
 //     })
-//     const cart = await CartItems.findAll({
-//       where: {
-//         userId: req.params.userId,
-//         orderId: null
-//       },
-//       include: [
-//         {
-//           model: Product
-//         }
-//       ],
-//       order: [['id', 'ASC']]
-//     })
-//     res.json(cart)
+//     res.status(200).json(newCartItem)
 //   } catch (err) {
 //     next(err)
 //   }
 // })
 
+// Adding to cart & consolidate quantities
 router.post('/', async (req, res, next) => {
   try {
     let item = await CartItems.findOne({
       where: {
-        ...(req.body.userId && {userId: req.body.userId}),
-        ...(req.body.sessionId && {sessionId: req.body.sessionId}),
+        userId: req.body.userId,
         productId: req.body.productId
       }
     })
@@ -90,28 +79,14 @@ router.post('/', async (req, res, next) => {
       item.quantity += req.body.quantity
       await item.save()
     } else {
-      await CartItems.create({
+      let item = await CartItems.create({
         quantity: req.body.quantity,
         productId: req.body.productId,
-        ...(req.body.userId && {userId: req.body.userId}),
-        ...(req.body.sessionId && {sessionId: req.body.sessionId}),
+        userId: req.body.userId,
         orderId: null
       })
     }
-    const cart = await CartItems.findAll({
-      where: {
-        ...(req.body.userId && {userId: req.body.userId}),
-        ...(req.body.sessionId && {sessionId: req.body.sessionId}),
-        orderId: null
-      },
-      include: [
-        {
-          model: Product
-        }
-      ],
-      order: [['id', 'ASC']]
-    })
-    res.json(cart)
+    res.status(200).json(item)
   } catch (err) {
     next(err)
   }

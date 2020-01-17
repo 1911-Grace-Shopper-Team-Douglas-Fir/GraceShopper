@@ -3,7 +3,7 @@ import {CardElement, injectStripe} from 'react-stripe-elements'
 import axios from 'axios'
 import AddressForm from './AddressForm'
 
-class CheckoutForm extends Component {
+class StripeCheckout extends Component {
   constructor(props) {
     super(props)
     this.state = {complete: false}
@@ -11,8 +11,6 @@ class CheckoutForm extends Component {
   }
 
   async submit(ev) {
-    // User clicked submit
-
     let {token} = await this.props.stripe.createToken({name: 'Name'})
     console.log(token)
     let response = await axios.post('/api/checkout', token)
@@ -35,4 +33,4 @@ class CheckoutForm extends Component {
   }
 }
 
-export default injectStripe(CheckoutForm)
+export default injectStripe(StripeCheckout)
