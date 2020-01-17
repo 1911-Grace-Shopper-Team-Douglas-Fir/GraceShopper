@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const {CartItems, Product} = require('../db/models')
+const Sequelize = require('sequelize')
 
 router.get('/:userId', async (req, res, next) => {
   try {
@@ -49,15 +50,41 @@ router.put('/:userId', async (req, res, next) => {
   }
 })
 
+// router.post('/', async (req, res, next) => {
+//   try {
+//     const newCartItem = await CartItems.create({
+//       quantity: req.body.quantity,
+//       productId: req.body.productId,
+//       userId: req.body.userId,
+//       orderId: null
+//     })
+//     res.status(200).json(newCartItem)
+//   } catch (err) {
+//     next(err)
+//   }
+// })
+
+// Adding to cart & consolidate quantities
 router.post('/', async (req, res, next) => {
   try {
-    const newCartItem = await CartItems.create({
-      quantity: req.body.quantity,
-      productId: req.body.productId,
-      userId: req.body.userId,
-      orderId: null
+    let item = await CartItems.findOne({
+      where: {
+        userId: req.body.userId,
+        productId: req.body.productId
+      }
     })
-    res.status(200).json(newCartItem)
+    if (item) {
+      item.quantity += req.body.quantity
+      await item.save()
+    } else {
+      let item = await CartItems.create({
+        quantity: req.body.quantity,
+        productId: req.body.productId,
+        userId: req.body.userId,
+        orderId: null
+      })
+    }
+    res.status(200).json(item)
   } catch (err) {
     next(err)
   }

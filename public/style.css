@@ -37,3 +37,15 @@ form div {
   flex-wrap: wrap;
   margin: 20px;
 }
+
+.page-numbers-list {
+  display: flex;
+  justify-content: center;
+}
+
+.page-numbers {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 10px;
+}

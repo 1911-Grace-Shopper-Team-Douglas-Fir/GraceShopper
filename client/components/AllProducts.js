@@ -6,12 +6,31 @@ import {addProduct} from '../store/cart'
 export class AllProducts extends React.Component {
   constructor() {
     super()
-    this.state = {}
+    this.state = {
+      currentPage: 1,
+      productsPerPage: 5,
+      search: ''
+    }
+    this.handleClick = this.handleClick.bind(this)
     this.handleSubmit = this.handleSubmit.bind(this)
+    this.updateSearch = this.updateSearch.bind(this)
+  }
+
+  updateSearch(event) {
+    this.setState({search: event.target.value.substr(0, 20)})
+    this.setState({
+      currentPage: 1
+    })
   }
 
   componentDidMount() {
     this.props.fetchProducts()
+  }
+
+  handleClick(event) {
+    this.setState({
+      currentPage: Number(event.target.id)
+    })
   }
 
   handleSubmit(event) {
@@ -25,27 +44,82 @@ export class AllProducts extends React.Component {
   }
 
   render() {
-    const products = this.props.products
+    const {currentPage, productsPerPage} = this.state
+    const productCatalog = this.props.products
+
+    // Logic for displaying products
+    const indexOfLastProduct = currentPage * productsPerPage
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage
+    const searchedProducts = productCatalog.filter(product => {
+      return (
+        product.name.toLowerCase().indexOf(this.state.search.toLowerCase()) !==
+        -1
+      )
+    })
+    const currentProducts = searchedProducts.slice(
+      indexOfFirstProduct,
+      indexOfLastProduct
+    )
+
+    // Logic for displaying page numbers
+    const pageNumbers = []
+    for (
+      let i = 1;
+      i <= Math.ceil(productCatalog.length / productsPerPage);
+      i++
+    ) {
+      pageNumbers.push(i)
+    }
+    let dynamicPages = pageNumbers.slice(
+      0,
+      Math.ceil(searchedProducts.length / productsPerPage)
+    )
+
+    // React JSX rendering
     return (
       <div>
+        <input
+          type="text"
+          value={this.state.search}
+          onChange={this.updateSearch}
+        />
         <ul>
-          {products &&
-            products.map(product => (
-              <div className="product-container" key={product.id}>
-                <h1>{product.name}</h1>
-                <p>{product.description}</p>
-                <button
-                  id={product.id}
-                  type="submit"
-                  onClick={this.handleSubmit}
-                >
-                  {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
-                </button>
-                <h2>{product.category}</h2>
-                <img src={product.imageUrl} />
+          {currentProducts.map((product, index) => {
+            return (
+              <div key={product.id}>
+                <div className="product-container">
+                  <h1>{product.name}</h1>
+                  <p>{product.description}</p>
+                  <button
+                    id={product.id}
+                    type="submit"
+                    onClick={this.handleSubmit}
+                  >
+                    {' '}
+                    {`$${(product.price / 100).toFixed(2)}`} - Add to Cart{' '}
+                  </button>
+                  <h2>{product.category}</h2>
+                  <img src={product.imageUrl} />
+                </div>
               </div>
-            ))}
+            )
+          })}
         </ul>
+        <div className="page-numbers-list" id="page-numbers">
+          {dynamicPages.map(number => {
+            return (
+              <div
+                className="page-numbers"
+                key={number}
+                id={number}
+                onClick={this.handleClick}
+              >
+                {' '}
+                {number}{' '}
+              </div>
+            )
+          })}
+        </div>
       </div>
     )
   }
