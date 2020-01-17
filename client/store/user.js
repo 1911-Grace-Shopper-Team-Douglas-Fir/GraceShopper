@@ -25,8 +25,10 @@ const updateUser = user => ({type: UPDATE_USER, user})
 
 export const me = () => async dispatch => {
   try {
+    // merge the sid into the response for /auth/me
     const res = await axios.get('/auth/me')
     const sid = await axios.get('/auth/sid')
+    // {sid: ""}
     if (!res.data) defaultUser = {sid: sid.data}
     dispatch(getUser(res.data || defaultUser))
   } catch (err) {

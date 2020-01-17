@@ -33,6 +33,7 @@ class SingleProduct extends React.Component {
             onChange={this.handleChange}
           />
           <button type="submit">
+            {new Intl.NumberFormat(/*'en-IN'*/, { maximumSignificantDigits: 3 }).format(number)}
             {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
           </button>
         </form>

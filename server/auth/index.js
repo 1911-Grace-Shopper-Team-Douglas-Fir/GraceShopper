@@ -39,7 +39,7 @@ router.post('/logout', (req, res) => {
 })
 
 router.get('/me', (req, res) => {
-  res.json(req.user)
+  res.json({...req.user, sid: req.session.id})
 })
 
 router.get('/sid', async (req, res, next) => {
