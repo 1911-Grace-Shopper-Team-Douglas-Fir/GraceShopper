@@ -43,25 +43,29 @@ const productsToSeed = [
     description:
       'Soothe your woes after drunken bar fights with organic arnica and shea butter',
     price: 1499,
-    category: 'body'
+    category: 'body',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg'
   },
   {
     name: 'Scented Candle',
     description: 'Calming scents of burning wood chips and neroli',
     price: 5399,
-    category: 'home'
+    category: 'home',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg'
   },
   {
     name: 'Shower Gel',
     description: 'Lavender scented gel with aloe base',
     price: 899,
-    category: 'body'
+    category: 'body',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg'
   },
   {
     name: 'Eye Cream',
     description: 'Roll back the years with pig placenta',
     price: 4499,
-    category: 'face'
+    category: 'face',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg'
   },
   {
     name: 'Hand Cream',

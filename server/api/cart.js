@@ -6,7 +6,8 @@ router.get('/:userId', async (req, res, next) => {
   try {
     const cart = await CartItems.findAll({
       where: {
-        userId: req.params.userId,
+        ...(req.body.userId && {userId: req.body.userId}),
+        ...(req.body.sessionId && {sessionId: req.body.sessionId}),
         orderId: null
       },
       include: [
@@ -30,11 +31,12 @@ router.put('/:userId', async (req, res, next) => {
       ...(req.body.productId && {productId: req.body.productId}),
       ...(req.body.userId && {userId: req.body.userId})
     }
-    const cartItem = await CartItems.findByPk(entryId)
+    await CartItems.findByPk(entryId)
     await cartItem.update(updateObj)
     const cart = await CartItems.findAll({
       where: {
-        userId: req.params.userId,
+        ...(req.body.userId && {userId: req.body.userId}),
+        ...(req.body.sessionId && {sessionId: req.body.sessionId}),
         orderId: null
       },
       include: [
@@ -87,6 +89,16 @@ router.post('/', async (req, res, next) => {
     res.status(200).json(item)
   } catch (err) {
     next(err)
+  }
+})
+
+router.delete('/:productId', async (req, res, next) => {
+  const productId = req.params.productId
+  try {
+    await CartItems.destroy({where: {productId: productId}})
+    res.status(204).end()
+  } catch (error) {
+    next(error)
   }
 })
 

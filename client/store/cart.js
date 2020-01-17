@@ -2,11 +2,9 @@ import axios from 'axios'
 
 // Action creator
 const SET_CART = 'SET_CART'
-
 const UPDATE_CART = 'UPDATE_CART'
-
 const ADD_CART_ITEM = 'ADD_CART_ITEM'
-
+const DELETE_CART_ITEM = 'DELETE_CART_ITEM'
 
 export const setCart = cart => {
   return {
@@ -14,7 +12,6 @@ export const setCart = cart => {
     cart: cart
   }
 }
-
 
 export const editCart = cartItem => {
   return {
@@ -30,6 +27,12 @@ export const addCartItem = item => {
   }
 }
 
+export const removeItem = productId => {
+  return {
+    type: DELETE_CART_ITEM,
+    productId
+  }
+}
 // Thunk Middleware
 export const fetchCart = userId => {
   return async dispatch => {
@@ -41,7 +44,6 @@ export const fetchCart = userId => {
     }
   }
 }
-
 
 export const updateCart = (userId, cartObj) => {
   return async dispatch => {
@@ -65,6 +67,17 @@ export const addProduct = product => {
   }
 }
 
+export const deleteItem = productId => {
+  return async dispatch => {
+    try {
+      await axios.delete(`/api/cart/${productId}`)
+      dispatch(removeItem(productId))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
 // Reducer
 const cartReducer = (state = [], action) => {
   switch (action.type) {
@@ -74,6 +87,8 @@ const cartReducer = (state = [], action) => {
       return [...action.cartItem]
     case ADD_CART_ITEM:
       return [...state, action.item]
+    case DELETE_CART_ITEM:
+      return state.filter(product => product.productId !== action.productId)
     default:
       return state
   }

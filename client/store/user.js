@@ -11,7 +11,7 @@ const UPDATE_USER = 'UPDATE_USER'
 /**
  * INITIAL STATE
  */
-const defaultUser = {}
+let defaultUser = {}
 
 /**
  * ACTION CREATORS
@@ -22,9 +22,12 @@ const updateUser = user => ({type: UPDATE_USER, user})
 /**
  * THUNK CREATORS
  */
+
 export const me = () => async dispatch => {
   try {
     const res = await axios.get('/auth/me')
+    const sid = await axios.get('/auth/sid')
+    if (!res.data) defaultUser = {sid: sid.data}
     dispatch(getUser(res.data || defaultUser))
   } catch (err) {
     console.error(err)
