@@ -82,11 +82,11 @@ export const deleteItem = productId => {
 const cartReducer = (state = [], action) => {
   switch (action.type) {
     case SET_CART:
-      return [...action.cart]
+      return action.cart
     case UPDATE_CART:
       return [...action.cartItem]
     case ADD_CART_ITEM:
-      return [...action.item]
+      return action.item
     case DELETE_CART_ITEM:
       return state.filter(product => product.productId !== action.productId)
     default:

@@ -2,10 +2,9 @@ const router = require('express').Router()
 const {CartItems, Product} = require('../db/models')
 
 router.get('/:id', async (req, res, next) => {
-  let id =
-    typeof Number(req.params.id) === 'number'
-      ? {userId: req.params.id, orderId: null}
-      : {sessionId: req.params.id, orderId: null}
+  let id = /[a-z]/i.test(req.params.id)
+    ? {sessionId: req.params.id, orderId: null}
+    : {userId: req.params.id, orderId: null}
   try {
     const cart = await CartItems.findAll({
       where: id,
@@ -25,32 +24,24 @@ router.get('/:id', async (req, res, next) => {
 router.put('/:userId', async (req, res, next) => {
   try {
     const entryId = req.body.id
-    let updateObj =
-      typeof Number(req.params.userId) === 'number'
-        ? {
-            userId: req.params.userId,
-            quantity: req.body.quantity,
-            ...(req.body.productId && {productId: req.body.productId})
-          }
-        : {
-            sessionId: req.params.userId,
-            quantity: req.body.quantity,
-            ...(req.body.productId && {productId: req.body.productId})
-          }
-
-    // const updateObj = {
-    //   ...(req.body.quantity && {quantity: req.body.quantity}),
-    //   ...(req.body.productId && {productId: req.body.productId}),
-    //   ...(req.body.userId && {userId: req.body.userId})
-    // }
+    let updateObj = /[a-z]/i.test(req.params.id)
+      ? {
+          sessionId: req.params.userId,
+          quantity: req.body.quantity,
+          ...(req.body.productId && {productId: req.body.productId})
+        }
+      : {
+          userId: req.params.userId,
+          quantity: req.body.quantity,
+          ...(req.body.productId && {productId: req.body.productId})
+        }
 
     const cartItem = await CartItems.findByPk(entryId)
     await cartItem.update(updateObj)
 
-    let id =
-      typeof Number(req.params.userId) === 'number'
-        ? {userId: req.params.userId, orderId: null}
-        : {sessionId: req.params.userId, orderId: null}
+    let id = /[a-z]/i.test(req.params.id)
+      ? {sessionId: req.params.id, orderId: null}
+      : {userId: req.params.id, orderId: null}
 
     const cart = await CartItems.findAll({
       where: id,

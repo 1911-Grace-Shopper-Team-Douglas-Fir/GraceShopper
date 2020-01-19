@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {fetchCart, updateCart, deleteItem} from '../store/cart'
+import {fetchCart, updateCart, deleteItem, addProduct} from '../store/cart'
 import {Link} from 'react-router-dom'
 
 class Cart extends React.Component {
@@ -8,15 +8,13 @@ class Cart extends React.Component {
     super(props)
     this.state = {
       id: null,
-      quantity: null
+      quantity: null,
+      userId: this.props.isLoggedIn ? this.props.user.id : this.props.user.sid
     }
   }
 
   componentDidMount() {
-    this.props.setCart(
-      this.props.isLoggedIn ? this.props.user.id : this.props.user.sid
-    )
-    console.log(this.props.isLoggedIn, this.props.user)
+    this.props.setCart(this.state.userId)
   }
 
   handleChange = evt => {
@@ -28,7 +26,7 @@ class Cart extends React.Component {
   handleSubmitQty = evt => {
     evt.preventDefault()
     const updateObj = this.state
-    this.props.updateQty(updateObj)
+    this.props.updateQty(this.state.userId, updateObj)
     evt.target.innerText = 'added to cart'
   }
 
@@ -99,7 +97,7 @@ const mapDispatch = dispatch => {
     setCart: id => {
       dispatch(fetchCart(id))
     },
-    updateQty: updateObj => {
+    updateQty: (userId, updateObj) => {
       dispatch(updateCart(userId, updateObj))
     },
     deleteItem: productId => {
