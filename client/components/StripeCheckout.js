@@ -1,7 +1,9 @@
 import React, {Component} from 'react'
+import {connect} from 'react-redux'
 import {CardElement, injectStripe} from 'react-stripe-elements'
 import axios from 'axios'
 import AddressForm from './AddressForm'
+import {addOrder} from '../store/orders'
 
 class StripeCheckout extends Component {
   constructor(props) {
@@ -12,11 +14,13 @@ class StripeCheckout extends Component {
 
   async submit(ev) {
     let {token} = await this.props.stripe.createToken({name: 'Name'})
-    console.log(token)
     let response = await axios.post('/api/checkout', token)
-    console.log(response)
 
     if (response.data.status === 'succeeded') this.setState({complete: true})
+
+    if (response.data.status === 'succeeded') {
+      this.props.addOrder(this.props.user.id)
+    }
   }
 
   render() {
@@ -33,4 +37,18 @@ class StripeCheckout extends Component {
   }
 }
 
-export default injectStripe(StripeCheckout)
+const mapState = state => {
+  return {
+    user: state.user
+  }
+}
+
+const mapDispatch = dispatch => {
+  return {
+    addOrder: userId => {
+      dispatch(addOrder(userId))
+    }
+  }
+}
+
+export default connect(mapState, mapDispatch)(injectStripe(StripeCheckout))
