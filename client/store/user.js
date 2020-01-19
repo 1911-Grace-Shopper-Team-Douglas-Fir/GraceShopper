@@ -30,7 +30,7 @@ export const me = () => async dispatch => {
     const sid = await axios.get('/auth/sid')
     if (!res.data) defaultUser = {sid: sid.data}
     dispatch(getUser(res.data || defaultUser))
-    // dispatch(fetchCart(res.data.id && sid.data))
+    dispatch(fetchCart(res.data.id || sid.data))
   } catch (err) {
     console.error(err)
   }

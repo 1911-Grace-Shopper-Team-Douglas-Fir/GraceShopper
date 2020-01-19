@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import {fetchCart, updateCart, deleteItem, addProduct} from '../store/cart'
+import {fetchCart, updateCart, deleteItem} from '../store/cart'
 import {Link} from 'react-router-dom'
 
 class Cart extends React.Component {
