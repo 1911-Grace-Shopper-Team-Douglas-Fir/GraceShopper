@@ -1,5 +1,6 @@
 const router = require('express').Router()
 const {CartItems, Product} = require('../db/models')
+const Sequelize = require('sequelize')
 
 router.get('/:id', async (req, res, next) => {
   let id = /[a-z]/i.test(req.params.id)

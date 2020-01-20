@@ -27,7 +27,6 @@ class Cart extends React.Component {
     evt.preventDefault()
     const updateObj = this.state
     this.props.updateQty(this.state.userId, updateObj)
-    evt.target.innerText = 'added to cart'
   }
 
   handleDelete = productId => {

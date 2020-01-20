@@ -14,7 +14,7 @@ export const setSingleProduct = product => {
 export const fetchSingleProduct = productId => {
   return async dispatch => {
     try {
-      const response = await axios.get(`/api/products/product/${productId}`)
+      const response = await axios.get(`/api/products/${productId}`)
       dispatch(setSingleProduct(response.data))
     } catch (err) {
       console.log(err)

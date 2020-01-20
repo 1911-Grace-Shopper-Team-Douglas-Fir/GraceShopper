@@ -19,7 +19,7 @@ const Product = db.define('product', {
   },
   imageUrl: {
     type: Sequelize.STRING,
-    defaultValue: 'https://semantic-ui.com/images/wireframe/white-image.png'
+    defaultValue: 'https://i.ibb.co/Tvwthkk/lotion.jpg'
   },
   category: {
     type: Sequelize.STRING,
