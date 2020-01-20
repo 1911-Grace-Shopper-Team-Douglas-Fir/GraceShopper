@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {fetchProducts} from '../store/allProducts'
 import {addProduct} from '../store/cart'
+import FilterPanel from './FilterPanel'
 
 export class AllProducts extends React.Component {
   constructor() {
@@ -86,6 +87,7 @@ export class AllProducts extends React.Component {
           value={this.state.search}
           onChange={this.updateSearch}
         />
+        <FilterPanel />
         <div className="product-container">
           {currentProducts.map((product, index) => {
             return (

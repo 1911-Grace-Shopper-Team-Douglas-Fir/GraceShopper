@@ -18,4 +18,26 @@ router.get('/', async (req, res, next) => {
     next(err)
   }
 })
+
+router.get('/filter/:type', async (req, res, next) => {
+  try {
+    let products
+    if (req.params.type === 'price') {
+      products = await Product.findAll({order: [['price', 'ASC']]})
+    } else if (req.params.type === 'name') {
+      products = await Product.findAll({order: [['name', 'ASC']]})
+    } else {
+      products = await Product.findAll({
+        where: {
+          category: req.params.type
+        },
+        order: [['id', 'ASC']]
+      })
+    }
+    res.json(products)
+  } catch (error) {
+    next(error)
+  }
+})
+
 module.exports = router
