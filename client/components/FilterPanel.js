@@ -14,8 +14,8 @@ class FilterPanel extends React.Component {
 
   render() {
     return (
-      <div>
-        <div>
+      <div id="filter-type">
+        <div id="filter-product-type">
           <h2>Product Type</h2>
           <button name="face" onClick={this.handleClick}>
             Skincare
@@ -30,7 +30,7 @@ class FilterPanel extends React.Component {
             Shop All
           </button>
         </div>
-        <div>
+        <div id="filter-product-attr">
           <h2>Filter</h2>
           <button name="price" onClick={this.handleClick}>
             Price $-$$$
