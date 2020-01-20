@@ -30,7 +30,7 @@ const Navbar = ({handleClick, isLoggedIn, user}) => (
             <a href="#" onClick={handleClick}>
               Logout
             </a>
-            <Link to={`/cart/${user.sid && user.id}`}>
+            <Link to="/cart">
               <MdShoppingCart size="30" />
             </Link>
           </div>
@@ -38,7 +38,7 @@ const Navbar = ({handleClick, isLoggedIn, user}) => (
           <div>
             {/* The navbar will show these links before you log in */}
             <Link to="/login">Login</Link>|<Link to="/signup">Sign Up</Link>
-            <Link to={`/cart/${user.sid && user.id}`}>
+            <Link to="/cart">
               <MdShoppingCart size="30" />
             </Link>
           </div>

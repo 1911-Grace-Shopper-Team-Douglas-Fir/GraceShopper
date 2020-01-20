@@ -2,14 +2,13 @@ const router = require('express').Router()
 const {CartItems, Product} = require('../db/models')
 const Sequelize = require('sequelize')
 
-router.get('/:userId', async (req, res, next) => {
+router.get('/:id', async (req, res, next) => {
+  let id = /[a-z]/i.test(req.params.id)
+    ? {sessionId: req.params.id, orderId: null}
+    : {userId: req.params.id, orderId: null}
   try {
     const cart = await CartItems.findAll({
-      where: {
-        ...(req.body.userId && {userId: req.body.userId}),
-        ...(req.body.sessionId && {sessionId: req.body.sessionId}),
-        orderId: null
-      },
+      where: id,
       include: [
         {
           model: Product
@@ -26,19 +25,27 @@ router.get('/:userId', async (req, res, next) => {
 router.put('/:userId', async (req, res, next) => {
   try {
     const entryId = req.body.id
-    const updateObj = {
-      ...(req.body.quantity && {quantity: req.body.quantity}),
-      ...(req.body.productId && {productId: req.body.productId}),
-      ...(req.body.userId && {userId: req.body.userId})
-    }
-    await CartItems.findByPk(entryId)
+    let updateObj = /[a-z]/i.test(req.params.id)
+      ? {
+          sessionId: req.params.userId,
+          quantity: req.body.quantity,
+          ...(req.body.productId && {productId: req.body.productId})
+        }
+      : {
+          userId: req.params.userId,
+          quantity: req.body.quantity,
+          ...(req.body.productId && {productId: req.body.productId})
+        }
+
+    const cartItem = await CartItems.findByPk(entryId)
     await cartItem.update(updateObj)
+
+    let id = /[a-z]/i.test(req.params.id)
+      ? {sessionId: req.params.id, orderId: null}
+      : {userId: req.params.id, orderId: null}
+
     const cart = await CartItems.findAll({
-      where: {
-        ...(req.body.userId && {userId: req.body.userId}),
-        ...(req.body.sessionId && {sessionId: req.body.sessionId}),
-        orderId: null
-      },
+      where: id,
       include: [
         {
           model: Product
@@ -52,41 +59,46 @@ router.put('/:userId', async (req, res, next) => {
   }
 })
 
-// router.post('/', async (req, res, next) => {
-//   try {
-//     const newCartItem = await CartItems.create({
-//       quantity: req.body.quantity,
-//       productId: req.body.productId,
-//       userId: req.body.userId,
-//       orderId: null
-//     })
-//     res.status(200).json(newCartItem)
-//   } catch (err) {
-//     next(err)
-//   }
-// })
-
-// Adding to cart & consolidate quantities
 router.post('/', async (req, res, next) => {
+  const update = req.body.userId
+    ? {userId: req.body.userId, productId: req.body.productId}
+    : {sessionId: req.body.sessionId, productId: req.body.productId}
+  const createNew = req.body.userId
+    ? {
+        userId: req.body.userId,
+        productId: req.body.productId,
+        quantity: req.body.quantity
+      }
+    : {
+        sessionId: req.body.sessionId,
+        productId: req.body.productId,
+        quantity: req.body.quantity
+      }
   try {
     let item = await CartItems.findOne({
-      where: {
-        userId: req.body.userId,
-        productId: req.body.productId
-      }
+      where: update
     })
     if (item) {
       item.quantity += req.body.quantity
       await item.save()
     } else {
-      let item = await CartItems.create({
-        quantity: req.body.quantity,
-        productId: req.body.productId,
-        userId: req.body.userId,
-        orderId: null
-      })
+      await CartItems.create(createNew)
     }
-    res.status(200).json(item)
+
+    const id = req.body.userId
+      ? {userId: req.body.userId, orderId: null}
+      : {sessionId: req.body.sessionId, orderId: null}
+
+    const cart = await CartItems.findAll({
+      where: id,
+      include: [
+        {
+          model: Product
+        }
+      ],
+      order: [['id', 'ASC']]
+    })
+    res.json(cart)
   } catch (err) {
     next(err)
   }

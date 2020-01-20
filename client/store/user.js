@@ -1,5 +1,6 @@
 import axios from 'axios'
 import history from '../history'
+import {fetchCart} from './cart'
 
 /**
  * ACTION TYPES
@@ -29,6 +30,7 @@ export const me = () => async dispatch => {
     const sid = await axios.get('/auth/sid')
     if (!res.data) defaultUser = {sid: sid.data}
     dispatch(getUser(res.data || defaultUser))
+    dispatch(fetchCart(res.data.id || sid.data))
   } catch (err) {
     console.error(err)
   }

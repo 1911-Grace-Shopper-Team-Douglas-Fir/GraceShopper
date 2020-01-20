@@ -71,7 +71,8 @@ const productsToSeed = [
     name: 'Hand Cream',
     description: 'Rich hand cream with eucalyptus extract',
     price: 1499,
-    category: 'body'
+    category: 'body',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png'
   },
   {
     name: 'Henry',
