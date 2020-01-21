@@ -3,6 +3,7 @@ import {connect} from 'react-redux'
 import {Link} from 'react-router-dom'
 import {fetchProducts} from '../store/allProducts'
 import {addProduct} from '../store/cart'
+import FilterPanel from './FilterPanel'
 
 export class AllProducts extends React.Component {
   constructor() {
@@ -81,37 +82,43 @@ export class AllProducts extends React.Component {
     // React JSX rendering
     return (
       <div>
-        <input
-          type="text"
-          value={this.state.search}
-          onChange={this.updateSearch}
-        />
-        <div className="product-container">
-          {currentProducts.map((product, index) => {
-            return (
-              <Link to={`/products/${product.id}`}>
-                <div
-                  className="product-card"
-                  style={{
-                    backgroundImage: `url(${product.imageUrl})`,
-                    backgroundSize: 200,
-                    backgroundRepeat: 'no-repeat'
-                  }}
-                  key={product.id}
-                >
-                  <p className="product-card-title">{product.name}</p>
-                  <button
-                    className="product-card-add-btn"
-                    id={product.id}
-                    type="submit"
-                    onClick={this.handleSubmit}
+        <div id="product-container">
+          <div id="filter-container">
+            <input
+              id="search"
+              type="text"
+              value={this.state.search}
+              onChange={this.updateSearch}
+            />
+            <FilterPanel />
+          </div>
+          <div className="product-card-container">
+            {currentProducts.map((product, index) => {
+              return (
+                <Link to={`/products/${product.id}`}>
+                  <div
+                    className="product-card"
+                    style={{
+                      backgroundImage: `url(${product.imageUrl})`,
+                      backgroundSize: 200,
+                      backgroundRepeat: 'no-repeat'
+                    }}
+                    key={product.id}
                   >
-                    {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
-                  </button>
-                </div>
-              </Link>
-            )
-          })}
+                    <p className="product-card-title">{product.name}</p>
+                    <button
+                      className="product-card-add-btn"
+                      id={product.id}
+                      type="submit"
+                      onClick={this.handleSubmit}
+                    >
+                      {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
+                    </button>
+                  </div>
+                </Link>
+              )
+            })}
+          </div>
         </div>
         <div className="page-numbers-list" id="page-numbers">
           {dynamicPages.map(number => {
