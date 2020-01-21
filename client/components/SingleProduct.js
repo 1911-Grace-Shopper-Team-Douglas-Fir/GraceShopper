@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {fetchSingleProduct} from '../store/singleProduct'
 import {addProduct} from '../store/cart'
+import Reviews from './Reviews'
 
 class SingleProduct extends React.Component {
   constructor() {
@@ -50,16 +51,21 @@ class SingleProduct extends React.Component {
         <div className="product-info">
           <h2>{product.name}</h2>
           <p>{product.description}</p>
-          Quantity{' '}
-          <input
-            type="text"
-            name="quantity"
-            value={this.state.quantity}
-            onChange={this.handleChange}
-          />
-          <button onClick={this.handleSubmit} type="submit">
-            {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
-          </button>
+          <div className="product-info-sub-container">
+            <div className="quantity">
+              <p>Quantity</p>
+              <input
+                type="number"
+                name="quantity"
+                value={this.state.quantity}
+                onChange={this.handleChange}
+              />
+            </div>
+            <button onClick={this.handleSubmit} type="submit">
+              {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
+            </button>
+            <Reviews />
+          </div>
         </div>
       </div>
     )
@@ -69,7 +75,8 @@ class SingleProduct extends React.Component {
 const mapState = state => {
   return {
     singleProduct: state.singleProduct,
-    user: state.user
+    user: state.user,
+    isLoggedIn: !!state.user.id
   }
 }
 

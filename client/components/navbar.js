@@ -6,7 +6,7 @@ import {logout} from '../store'
 import {FaTree} from 'react-icons/fa'
 import {MdShoppingCart} from 'react-icons/md'
 
-const Navbar = ({handleClick, isLoggedIn, user}) => (
+const Navbar = ({handleClick, isLoggedIn, cart}) => (
   <div id="nav-container">
     <div id="logo-container">
       <Link to="/">
@@ -30,17 +30,23 @@ const Navbar = ({handleClick, isLoggedIn, user}) => (
             <a href="#" onClick={handleClick}>
               Logout
             </a>
-            <Link to="/cart">
-              <MdShoppingCart size="30" />
-            </Link>
+            <div id="cart-container">
+              <Link to="/cart">
+                <MdShoppingCart size="30" />
+                <div id="cart-badge">{cart.length}</div>
+              </Link>
+            </div>
           </div>
         ) : (
           <div>
             {/* The navbar will show these links before you log in */}
             <Link to="/login">Login</Link>|<Link to="/signup">Sign Up</Link>
-            <Link to="/cart">
-              <MdShoppingCart size="30" />
-            </Link>
+            <div id="cart-container">
+              <Link to="/cart">
+                <MdShoppingCart size="30" />
+                <div id="cart-badge">{cart.length}</div>
+              </Link>
+            </div>
           </div>
         )}
       </nav>
@@ -54,7 +60,8 @@ const Navbar = ({handleClick, isLoggedIn, user}) => (
 const mapState = state => {
   return {
     isLoggedIn: !!state.user.id,
-    user: state.user
+    user: state.user,
+    cart: state.cart
   }
 }
 
