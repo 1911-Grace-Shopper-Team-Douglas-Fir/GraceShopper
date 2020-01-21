@@ -1,6 +1,7 @@
 const router = require('express').Router()
-const {User} = require('../db/models')
+const {User, Order, CartItems, Product} = require('../db/models')
 module.exports = router
+const sequelize = require('sequelize')
 
 router.get('/', async (req, res, next) => {
   try {
@@ -16,10 +17,30 @@ router.get('/', async (req, res, next) => {
   }
 })
 
-router.get('/:userId', async (req, res, next) => {
+//****** Need to include 'isLoggedIn' conditional here before this route:
+router.get('/myprofile', async (req, res, next) => {
   try {
-    const specificUser = await User.findByPk(req.params.userid)
-    res.json(specificUser)
+    const userOrders = await Order.findAll({
+      where: {
+        userId: req.user.id
+      },
+      include: [
+        {
+          model: CartItems,
+          where: {
+            orderId: {
+              [sequelize.Op.ne]: null
+            }
+          },
+          include: [
+            {
+              model: Product
+            }
+          ]
+        }
+      ]
+    })
+    res.json(userOrders)
   } catch (err) {
     next(err)
   }
