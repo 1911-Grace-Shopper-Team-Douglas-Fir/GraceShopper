@@ -75,7 +75,7 @@ class Cart extends React.Component {
             <h1>There are no items in the cart</h1>
           </div>
         )}
-        <Link to="/customerauth">
+        <Link to="/checkout">
           <button name="checkout">CHECKOUT</button>
         </Link>
       </React.Fragment>
