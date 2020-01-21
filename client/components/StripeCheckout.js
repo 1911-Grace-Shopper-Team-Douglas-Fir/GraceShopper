@@ -4,7 +4,7 @@ import {CardElement, injectStripe} from 'react-stripe-elements'
 import axios from 'axios'
 import AddressForm from './AddressForm'
 import {addOrder, fetchOrder} from '../store/orders'
-import {updateCart} from '../store/cart'
+import {addId} from '../store/cart'
 
 class StripeCheckout extends Component {
   constructor(props) {
@@ -27,7 +27,11 @@ class StripeCheckout extends Component {
   render() {
     if (this.state.complete) {
       console.log('in render', this.props.order)
-      this.props.updateCart(this.props.user.id, {orderId: this.props.order.id})
+      if (this.props.order.id) {
+        this.props.addId(this.props.user.id, {
+          orderId: this.props.order.id
+        })
+      }
       return <h1>Purchase Complete</h1>
     }
 
@@ -47,7 +51,8 @@ class StripeCheckout extends Component {
 const mapState = state => {
   return {
     user: state.user,
-    order: state.orders
+    order: state.orders,
+    cart: state.cart
   }
 }
 
@@ -59,8 +64,8 @@ const mapDispatch = dispatch => {
     fetchOrder: userId => {
       dispatch(fetchOrder(userId))
     },
-    updateCart: (userId, cartObj) => {
-      dispatch(updateCart(userId, cartObj))
+    addId: (userId, cartObj) => {
+      dispatch(addId(userId, cartObj))
     }
   }
 }

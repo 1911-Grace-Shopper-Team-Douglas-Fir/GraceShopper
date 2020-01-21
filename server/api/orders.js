@@ -32,6 +32,7 @@ router.post('/', async (req, res, next) => {
 })
 
 router.put('/cart', async (req, res, next) => {
+  console.log('in api route', req.body)
   const userId = Number(Object.keys(req.body))
   try {
     const updatedCartItems = await CartItems.update(

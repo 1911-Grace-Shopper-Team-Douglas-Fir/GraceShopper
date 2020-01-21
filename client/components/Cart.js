@@ -8,12 +8,13 @@ class Cart extends React.Component {
     super(props)
     this.state = {
       id: null,
-      quantity: null
+      quantity: null,
+      userId: this.props.isLoggedIn ? this.props.user.id : this.props.user.sid
     }
   }
 
   componentDidMount() {
-    this.props.setCart()
+    this.props.setCart(this.state.userId)
   }
 
   handleChange = evt => {
@@ -25,8 +26,7 @@ class Cart extends React.Component {
   handleSubmitQty = evt => {
     evt.preventDefault()
     const updateObj = this.state
-    this.props.updateQty(updateObj)
-    evt.target.innerText = 'added to cart'
+    this.props.updateQty(this.state.userId, updateObj)
   }
 
   handleDelete = productId => {
@@ -75,7 +75,7 @@ class Cart extends React.Component {
             <h1>There are no items in the cart</h1>
           </div>
         )}
-        <Link to="/customerauth">
+        <Link to="/checkout">
           <button name="checkout">CHECKOUT</button>
         </Link>
       </React.Fragment>
@@ -85,17 +85,18 @@ class Cart extends React.Component {
 
 const mapState = state => {
   return {
-    cart: state.cart
+    cart: state.cart,
+    isLoggedIn: !!state.user.id,
+    user: state.user
   }
 }
 
-const mapDispatch = (dispatch, ownProps) => {
-  const userId = ownProps.match.params.userId
+const mapDispatch = dispatch => {
   return {
-    setCart: () => {
-      dispatch(fetchCart(userId))
+    setCart: id => {
+      dispatch(fetchCart(id))
     },
-    updateQty: updateObj => {
+    updateQty: (userId, updateObj) => {
       dispatch(updateCart(userId, updateObj))
     },
     deleteItem: productId => {

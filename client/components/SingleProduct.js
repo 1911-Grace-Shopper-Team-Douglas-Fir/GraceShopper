@@ -12,19 +12,44 @@ class SingleProduct extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
+
   componentDidMount() {
     this.props.fetchSingleProduct(this.props.match.params.productId)
   }
+
+  handleSubmit(event) {
+    event.preventDefault()
+    let productToAdd = this.props.user.id
+      ? {
+          userId: this.props.user.id,
+          quantity: this.state.quantity,
+          productId: this.props.singleProduct.id
+        }
+      : {
+          sessionId: this.props.user.sid,
+          quantity: this.state.quantity,
+          productId: this.props.singleProduct.id
+        }
+    this.props.addProduct(productToAdd)
+    event.target.innerText = 'added to cart'
+  }
+
+  handleChange(event) {
+    this.setState({
+      [event.target.name]: event.target.value
+    })
+  }
+
   render() {
     const product = this.props.singleProduct
     console.log('in SingleProduct', this.props)
 
     return (
-      <div>
-        <h2>{product.name}</h2>
-        <p>{product.description}</p>
+      <div className="single-product-container">
         <img src={product.imageUrl} />
-        <form onSubmit={this.handleSubmit}>
+        <div className="product-info">
+          <h2>{product.name}</h2>
+          <p>{product.description}</p>
           Quantity{' '}
           <input
             type="text"
@@ -32,26 +57,12 @@ class SingleProduct extends React.Component {
             value={this.state.quantity}
             onChange={this.handleChange}
           />
-          <button type="submit">
+          <button onClick={this.handleSubmit} type="submit">
             {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
           </button>
-        </form>
+        </div>
       </div>
     )
-  }
-  handleSubmit(event) {
-    event.preventDefault()
-    const productToAdd = {
-      quantity: this.state.quantity,
-      productId: this.props.singleProduct.id,
-      userId: this.props.user.id
-    }
-    this.props.addProduct(productToAdd)
-  }
-  handleChange(event) {
-    this.setState({
-      [event.target.name]: event.target.value
-    })
   }
 }
 

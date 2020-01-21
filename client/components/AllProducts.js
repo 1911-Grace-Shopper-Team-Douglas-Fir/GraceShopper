@@ -1,5 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
+import {Link} from 'react-router-dom'
 import {fetchProducts} from '../store/allProducts'
 import {addProduct} from '../store/cart'
 
@@ -8,7 +9,7 @@ export class AllProducts extends React.Component {
     super()
     this.state = {
       currentPage: 1,
-      productsPerPage: 5,
+      productsPerPage: 10,
       search: ''
     }
     this.handleClick = this.handleClick.bind(this)
@@ -35,12 +36,13 @@ export class AllProducts extends React.Component {
 
   handleSubmit(event) {
     event.preventDefault()
-    const productToAdd = {
-      quantity: 1,
-      productId: event.target.id,
-      ...(this.props.user.id && {userId: this.props.user.id}),
-      ...(this.props.user.sid && {sessionId: this.props.user.sid})
-    }
+    let productToAdd = this.props.user.id
+      ? {userId: this.props.user.id, quantity: 1, productId: event.target.id}
+      : {
+          sessionId: this.props.user.sid,
+          quantity: 1,
+          productId: event.target.id
+        }
     this.props.addProduct(productToAdd)
   }
 
@@ -84,28 +86,33 @@ export class AllProducts extends React.Component {
           value={this.state.search}
           onChange={this.updateSearch}
         />
-        <ul>
+        <div className="product-container">
           {currentProducts.map((product, index) => {
             return (
-              <div key={product.id}>
-                <div className="product-container">
-                  <h1>{product.name}</h1>
-                  <p>{product.description}</p>
+              <Link to={`/products/${product.id}`}>
+                <div
+                  className="product-card"
+                  style={{
+                    backgroundImage: `url(${product.imageUrl})`,
+                    backgroundSize: 200,
+                    backgroundRepeat: 'no-repeat'
+                  }}
+                  key={product.id}
+                >
+                  <p className="product-card-title">{product.name}</p>
                   <button
+                    className="product-card-add-btn"
                     id={product.id}
                     type="submit"
                     onClick={this.handleSubmit}
                   >
-                    {' '}
-                    {`$${(product.price / 100).toFixed(2)}`} - Add to Cart{' '}
+                    {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
                   </button>
-                  <h2>{product.category}</h2>
-                  <img src={product.imageUrl} />
                 </div>
-              </div>
+              </Link>
             )
           })}
-        </ul>
+        </div>
         <div className="page-numbers-list" id="page-numbers">
           {dynamicPages.map(number => {
             return (
@@ -129,7 +136,8 @@ export class AllProducts extends React.Component {
 const mapState = state => {
   return {
     products: state.allProducts,
-    user: state.user
+    user: state.user,
+    isLoggedIn: !!state.user.id
   }
 }
 
@@ -141,35 +149,3 @@ const mapDispatch = dispatch => {
 }
 
 export default connect(mapState, mapDispatch)(AllProducts)
-
-/*
-
-
-{products &&
-          products.map(product => (
-            <div
-              className="product-card"
-              style={{
-                backgroundImage: `url(${product.imageUrl})`,
-                backgroundSize: 250,
-                backgroundRepeat: 'no-repeat'
-              }}
-              key={product.id}
-            >
-               <img className="product-img" src={product.imageUrl} />
-              <p className="product-card-title">{product.name}</p>
-              <button
-                className="product-card-add-btn"
-                id={product.id}
-                type="submit"
-                onClick={this.handleSubmit}
-              >
-                {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
-              </button>
-            </div>
-          ))}
-
-
-
-
-*/

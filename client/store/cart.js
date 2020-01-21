@@ -5,6 +5,7 @@ const SET_CART = 'SET_CART'
 const UPDATE_CART = 'UPDATE_CART'
 const ADD_CART_ITEM = 'ADD_CART_ITEM'
 const DELETE_CART_ITEM = 'DELETE_CART_ITEM'
+const ADD_ORDER_ID = 'ADD_ORDER_ID'
 
 export const setCart = cart => {
   return {
@@ -33,11 +34,18 @@ export const removeItem = productId => {
     productId
   }
 }
+
+export const addOrderId = orderId => {
+  return {
+    type: ADD_ORDER_ID,
+    orderId
+  }
+}
 // Thunk Middleware
-export const fetchCart = userId => {
+export const fetchCart = id => {
   return async dispatch => {
     try {
-      const response = await axios.get(`/api/cart/${userId}`)
+      const response = await axios.get(`/api/cart/${id}`)
       dispatch(setCart(response.data))
     } catch (err) {
       console.log(err)
@@ -48,6 +56,7 @@ export const fetchCart = userId => {
 export const updateCart = (userId, cartObj) => {
   return async dispatch => {
     try {
+      console.log('in thunk', userId, cartObj)
       const response = await axios.put(`/api/cart/${userId}`, cartObj)
       dispatch(editCart(response.data))
     } catch (error) {
@@ -78,17 +87,30 @@ export const deleteItem = productId => {
   }
 }
 
+export const addId = (userId, orderId) => {
+  return async dispatch => {
+    try {
+      await axios.put('/api/orders/cart')
+      dispatch(addOrderId(userId, orderId))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
 // Reducer
 const cartReducer = (state = [], action) => {
   switch (action.type) {
     case SET_CART:
-      return [...action.cart]
+      return action.cart
     case UPDATE_CART:
       return [...action.cartItem]
     case ADD_CART_ITEM:
-      return [...state, action.item]
+      return action.item
     case DELETE_CART_ITEM:
       return state.filter(product => product.productId !== action.productId)
+    case ADD_ORDER_ID:
+      return action.orderId
     default:
       return state
   }
