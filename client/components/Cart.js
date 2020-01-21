@@ -34,6 +34,15 @@ class Cart extends React.Component {
   }
 
   render() {
+    const length = this.props.cart.length
+    let total = 0
+    if (length) {
+      for (let i = 0; i < length; i++) {
+        let itemPrice = this.props.cart[i].price
+        let quantity = this.props.cart[i].quantity
+        total += itemPrice * quantity
+      }
+    }
     return (
       <React.Fragment>
         {this.props.cart ? (
@@ -69,6 +78,7 @@ class Cart extends React.Component {
                 </div>
               ))}
             </div>
+            <div>Order Total: {`$${(total / 100).toFixed(2)}`}</div>
           </div>
         ) : (
           <div>
