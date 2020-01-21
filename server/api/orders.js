@@ -1,5 +1,5 @@
 const router = require('express').Router()
-const {Order} = require('../db/models')
+const {Order, CartItems} = require('../db/models')
 module.exports = router
 
 router.get('/:userId', async (req, res, next) => {
@@ -26,6 +26,21 @@ router.post('/', async (req, res, next) => {
       userId
     })
     res.send(newOrder)
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/cart', async (req, res, next) => {
+  const userId = Number(Object.keys(req.body))
+  try {
+    const updatedCartItems = await CartItems.update(
+      {
+        orderId: 'in process'
+      },
+      {where: userId}
+    )
+    res.send(updatedCartItems)
   } catch (err) {
     next(err)
   }
