@@ -114,9 +114,42 @@ nav a:active {
   right: -8px;
 }
 
-form div {
-  margin: 1em;
-  display: inline-block;
+/* LOGIN / SIGNUP */
+
+#login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10%;
+}
+
+#login input {
+  width: 300px;
+  font-size: larger;
+  height: 25px;
+  margin-bottom: 20px;
+  border: none;
+}
+
+#login button {
+  width: 300px;
+  height: 50px;
+  border: none;
+  text-transform: uppercase;
+  font-size: 1em;
+  font-weight: 200;
+  background-color: #000000;
+  color: #ffffff;
+  margin-bottom: 10px;
+}
+
+#login button#google {
+  background-color: rgb(64, 64, 219);
+}
+
+#login button:hover {
+  cursor: pointer;
 }
 
 /*ALL PRODUCTS*/
@@ -208,28 +241,7 @@ form div {
   flex-direction: column;
   align-items: flex-end;
   width: 100%;
-}
-
-.reviews-container {
-  width: 100%;
-  position: relative;
-}
-
-.reviews-title {
-  border-top: 1px solid black;
-  border-bottom: 1px solid black;
-  text-align: center;
-  padding-top: 20px;
-  padding-bottom: 20px;
-}
-
-#review-modal {
-  height: 50%;
-  width: 50%;
-  transform: translate(50%, 50%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  margin-top: 50px;
 }
 
 .product-info-sub-container button {
@@ -263,6 +275,77 @@ form div {
   margin-left: 10px;
   border: none;
   padding-left: 12px;
+}
+
+.reviews-container {
+  width: 100%;
+  position: relative;
+}
+
+.reviews-title {
+  border-top: 1px solid black;
+  border-bottom: 1px solid black;
+  text-align: center;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  margin-top: 50px;
+}
+
+.reviews-title:hover {
+  cursor: pointer;
+}
+
+.single-review-container {
+  border-bottom: 1px solid black;
+}
+
+#review-modal {
+  height: 50%;
+  width: 50%;
+  transform: translate(50%, 50%);
+  display: flex;
+  align-items: center;
+}
+
+#close-modal {
+  align-self: flex-start;
+  justify-self: self-end;
+}
+
+#close-modal:hover {
+  cursor: pointer;
+}
+
+#modal-inner-container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: 20%;
+}
+
+#modal-inner-container input {
+  width: 400px;
+  margin-bottom: 20px;
+  border: none;
+}
+
+#modal-inner-container textarea {
+  width: 400px;
+  height: 150px;
+  margin-bottom: 20px;
+  border: none;
+}
+
+#modal-inner-container button {
+  width: 400px;
+  height: 50px;
+  border: none;
+  text-transform: uppercase;
+  font-size: 1em;
+  font-weight: 200;
+  background-color: #000000;
+  color: #ffffff;
 }
 
 /* FILTER PANEL */
@@ -322,6 +405,8 @@ form div {
   display: flex;
   flex-direction: column;
 }
+
+/* CART */
 
 /***************/
 
