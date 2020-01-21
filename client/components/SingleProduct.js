@@ -18,18 +18,20 @@ class SingleProduct extends React.Component {
     this.props.fetchSingleProduct(this.props.match.params.productId)
   }
 
-  handleSubmit(event) {
+  handleSubmit(event, price) {
     event.preventDefault()
     let productToAdd = this.props.user.id
       ? {
           userId: this.props.user.id,
           quantity: this.state.quantity,
-          productId: this.props.singleProduct.id
+          productId: this.props.singleProduct.id,
+          price
         }
       : {
           sessionId: this.props.user.sid,
           quantity: this.state.quantity,
-          productId: this.props.singleProduct.id
+          productId: this.props.singleProduct.id,
+          price
         }
     this.props.addProduct(productToAdd)
     event.target.innerText = 'added to cart'
@@ -43,7 +45,6 @@ class SingleProduct extends React.Component {
 
   render() {
     const product = this.props.singleProduct
-    console.log('in SingleProduct', this.props)
 
     return (
       <div className="single-product-container">
@@ -61,7 +62,10 @@ class SingleProduct extends React.Component {
                 onChange={this.handleChange}
               />
             </div>
-            <button onClick={this.handleSubmit} type="submit">
+            <button
+              onClick={e => this.handleSubmit(e, product.price)}
+              type="submit"
+            >
               {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
             </button>
             <Reviews />

@@ -23,7 +23,6 @@ class StripeCheckout extends Component {
       this.props.addId(this.props.user.id, {
         orderId: this.props.order.id
       })
-      console.log('in submit', this.props.order)
     }
   }
 
