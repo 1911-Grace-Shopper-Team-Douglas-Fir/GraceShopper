@@ -1,7 +1,7 @@
 'use strict'
 
 const db = require('../server/db')
-const {User, Product, CartItems, Order} = require('../server/db/models')
+const {User, Product, CartItems, Order, Review} = require('../server/db/models')
 
 const cartItemsToSeed = [
   {
@@ -27,6 +27,48 @@ const cartItemsToSeed = [
   }
 ]
 
+const reviewsToSeed = [
+  {
+    userId: 1,
+    productId: 1,
+    title: 'AWESOME!!',
+    content:
+      'Best smell ever!! I am extremely happy. This product has cured all my woes and made my skin glow, too.',
+    rating: 5
+  },
+  {
+    userId: 2,
+    productId: 1,
+    title: 'Just okay...',
+    content: 'I loved this but wish it was more moisturizing. :(',
+    rating: 3
+  },
+  {
+    userId: 3,
+    productId: 2,
+    title: 'Ugh, no.',
+    content:
+      'I feel like there is nothing worse in this world than this product. At least it smells nice.',
+    rating: 2
+  },
+  {
+    userId: 5,
+    productId: 4,
+    title: 'Best ever!!',
+    content:
+      "I loooooved this product! Leaving one star off because there's only a tiny amount in the container. Gimme more!!!",
+    rating: 4
+  },
+  {
+    userId: 6,
+    productId: 3,
+    title: 'My life is now complete.',
+    content:
+      "YES. I love candles and this was the best $50 I've ever spent on anything in my life.",
+    rating: 5
+  }
+]
+
 const ordersToSeed = [
   {userId: 1, status: 'complete'},
   {userId: 2, status: 'in process'}
@@ -34,7 +76,11 @@ const ordersToSeed = [
 
 const usersToSeed = [
   {email: 'cody@email.com', password: '123'},
-  {email: 'murphy@email.com', password: '123'}
+  {email: 'murphy@email.com', password: '123'},
+  {email: 'joejoe@email.com', password: '123'},
+  {email: 'anotheruser@email.com', password: '123'},
+  {email: 'thisguy@email.com', password: '123'},
+  {email: 'ladymacbeth@email.com', password: '123'}
 ]
 
 const productsToSeed = [
@@ -74,432 +120,806 @@ const productsToSeed = [
     category: 'body',
     imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png'
   },
+
   {
-    name: 'Henry',
+    name: 'Landry',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 922,
+    category: 'home',
     description:
-      'Nisi minim tempor do duis in anim ad sunt sit sint eu. Incididunt sint eiusmod deserunt exercitation do eu nulla ipsum sint. Reprehenderit commodo fugiat occaecat mollit. Elit tempor anim excepteur Lorem reprehenderit. Id labore adipisicing deserunt aliquip pariatur quis Lorem adipisicing commodo anim.\r\n',
+      'sit laborum adipisicing minim reprehenderit adipisicing culpa elit aliquip officia incididunt ad minim qui in dolore nostrud labore sunt excepteur velit duis in dolore in ipsum incididunt qui occaecat esse veniam eiusmod cillum laboris eu'
+  },
+  {
+    name: 'Dunn',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
     price: 3052,
-    category: 'aute'
+    category: 'body',
+    description:
+      'aliqua reprehenderit deserunt aliquip excepteur aute quis officia ut qui dolor laboris occaecat ullamco excepteur pariatur laborum in sit sit fugiat occaecat elit labore dolor cupidatat excepteur laborum in velit veniam laborum nulla occaecat eiusmod'
   },
   {
-    name: 'Finch',
+    name: 'Shaffer',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 700,
+    category: 'face',
     description:
-      'Adipisicing mollit mollit consectetur culpa labore anim esse mollit in irure laborum. Officia est aliqua esse laboris veniam amet incididunt voluptate irure veniam. Amet labore fugiat dolor tempor id Lorem elit proident eiusmod dolor aute ullamco nostrud cillum. Aliqua do sint aute nisi nisi laborum eu consectetur sit dolore velit. Incididunt magna adipisicing excepteur commodo.\r\n',
-    price: 3548,
-    category: 'in'
+      'ex commodo consectetur veniam esse minim dolore cupidatat voluptate consequat id magna eu tempor laboris nostrud tempor aliqua exercitation amet cillum aute eu cillum quis nostrud culpa amet Lorem sint ut do incididunt voluptate sunt'
   },
   {
-    name: 'Berry',
+    name: 'Ingram',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 3275,
+    category: 'body',
     description:
-      'Aute nisi ut enim aliqua laboris labore. Consectetur fugiat eu nulla enim officia ad eiusmod. Dolor officia adipisicing Lorem ullamco qui minim adipisicing.\r\n',
-    price: 534,
-    category: 'eu'
+      'aliquip id Lorem eu dolore velit dolore labore eu cillum duis eu veniam esse culpa sint non ut ea dolor velit deserunt dolor et aliquip ullamco dolore anim ex nulla duis exercitation sint duis mollit'
   },
   {
-    name: 'Huffman',
+    name: 'Reilly',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 1489,
+    category: 'home',
     description:
-      'Nulla elit sint incididunt id duis nulla sint commodo pariatur enim Lorem elit reprehenderit nisi. Ad in aliquip laboris quis nostrud minim eu culpa mollit. Ad pariatur ullamco id nisi fugiat velit irure et laboris quis est.\r\n',
-    price: 2409,
-    category: 'adipisicing'
+      'in do duis voluptate labore enim officia ea ut velit consectetur aliquip proident labore duis anim in aliquip aliquip ipsum ex id veniam sunt aliquip dolore consequat aliqua irure id mollit laboris qui ad ullamco'
   },
   {
-    name: 'Henrietta',
+    name: 'Santiago',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 2453,
+    category: 'home',
     description:
-      'Proident minim in nisi anim enim. Tempor elit non qui quis commodo ad dolor voluptate. Nostrud adipisicing nisi enim nostrud ut aute enim nisi fugiat consectetur fugiat esse. Officia laborum veniam sit dolore aute magna. Pariatur magna pariatur minim ex ad veniam quis non. Anim voluptate laborum laboris labore eiusmod in. Do reprehenderit nisi id esse.\r\n',
-    price: 1110,
-    category: 'irure'
+      'ex dolore laborum ipsum aute non ut deserunt et consectetur eu mollit tempor qui nisi fugiat adipisicing proident commodo non proident velit et nisi ipsum laboris labore velit cupidatat sunt quis qui excepteur magna mollit'
   },
   {
-    name: 'Goodwin',
+    name: 'Payne',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 2726,
+    category: 'body',
     description:
-      'Sunt ea nisi anim reprehenderit excepteur incididunt laborum fugiat consequat non. Proident laborum cupidatat consectetur fugiat occaecat qui eu minim aute proident. Eu mollit et adipisicing officia deserunt ullamco ut est culpa nulla. Cillum magna nulla occaecat incididunt incididunt excepteur magna ea amet ut elit velit enim. Ad dolor commodo nulla ea aliqua aute.\r\n',
-    price: 2787,
-    category: 'et'
+      'incididunt minim consequat elit adipisicing minim anim aute enim dolor do nostrud esse anim cillum fugiat ullamco sit esse tempor id labore consequat Lorem elit aute ad consequat velit proident cillum et pariatur sint mollit'
   },
   {
-    name: 'Amie',
+    name: 'Ortega',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 1735,
+    category: 'body',
     description:
-      'Magna ex amet aute aliqua duis voluptate veniam reprehenderit. Reprehenderit anim eu laborum non amet dolore culpa do. Amet nulla excepteur ut exercitation id anim. Est elit anim duis magna adipisicing enim. Velit tempor do in commodo aute officia. Et reprehenderit ea consequat incididunt amet excepteur adipisicing proident nulla.\r\n',
-    price: 1310,
-    category: 'et'
+      'tempor ex consectetur reprehenderit in reprehenderit veniam excepteur voluptate consequat reprehenderit qui veniam consequat proident proident ex sunt esse nisi exercitation ex esse quis aliqua sit minim amet aliquip laborum nulla commodo cillum esse irure'
   },
   {
-    name: 'Loraine',
+    name: 'Livingston',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 3066,
+    category: 'face',
     description:
-      'Aliquip eiusmod ipsum occaecat proident consectetur culpa elit exercitation dolor dolore voluptate. Do ad irure reprehenderit pariatur ea culpa veniam minim. Esse culpa veniam aliqua velit officia deserunt.\r\n',
-    price: 1558,
-    category: 'anim'
+      'qui cupidatat irure cillum occaecat mollit et aute sit officia consectetur labore laborum proident veniam pariatur incididunt non consequat nostrud culpa culpa voluptate incididunt eu incididunt nulla do ea amet ullamco in reprehenderit veniam irure'
   },
   {
-    name: 'Della',
+    name: 'William',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 1768,
+    category: 'body',
     description:
-      'Aliqua ut sunt excepteur adipisicing anim sunt consequat sunt nisi ad consequat sint. Laboris cupidatat sunt nisi officia et excepteur nostrud nulla incididunt qui do. In proident eiusmod incididunt aute deserunt amet eu adipisicing consectetur. Ut non velit ea est adipisicing excepteur. Nisi in pariatur quis pariatur nisi proident labore dolore est est. Cillum quis cillum exercitation aute qui velit velit amet sint velit ipsum ipsum sint.\r\n',
-    price: 3942,
-    category: 'non'
+      'consectetur non laboris voluptate et velit sunt irure eu aliqua sunt tempor eu aliquip eiusmod elit consectetur deserunt anim elit dolor aliqua sint consectetur nulla consequat anim consectetur minim qui mollit culpa exercitation sint id'
   },
   {
-    name: 'Darla',
+    name: 'Ward',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 2115,
+    category: 'home',
     description:
-      'Magna laborum voluptate laborum Lorem incididunt veniam dolore tempor duis. Esse excepteur aute quis ut anim. Tempor id veniam eiusmod voluptate. Id non laboris esse labore deserunt anim aliqua commodo. Tempor ullamco elit quis aute excepteur minim nostrud amet laborum magna ipsum do. Ea nulla sunt non laboris qui dolor adipisicing nulla magna mollit irure elit est. Aute id commodo consectetur dolor mollit reprehenderit nostrud esse nostrud elit duis non do mollit.\r\n',
-    price: 3511,
-    category: 'ut'
+      'in nisi nostrud est deserunt occaecat labore officia mollit deserunt cillum commodo sit ut non dolore sint ea do exercitation aute officia laborum aliqua excepteur do sunt id occaecat labore mollit enim consectetur occaecat esse'
   },
   {
-    name: 'Williams',
+    name: 'Calderon',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 2164,
+    category: 'body',
     description:
-      'Ad qui eu exercitation pariatur est irure amet nulla irure anim magna enim non. Culpa occaecat pariatur adipisicing nostrud deserunt commodo reprehenderit laborum exercitation aliquip proident consectetur. Aliquip adipisicing exercitation velit ut ea dolore in ipsum quis commodo. Tempor nisi pariatur aliquip laborum ea culpa est excepteur laborum in anim. Reprehenderit cillum nisi exercitation sunt est aliqua commodo ipsum in in incididunt irure cupidatat. Voluptate sit quis aliquip reprehenderit ad. Adipisicing excepteur et ex nisi cillum amet aliquip nisi esse ut do ullamco culpa occaecat.\r\n',
-    price: 1130,
-    category: 'in'
+      'exercitation exercitation nisi deserunt dolor ut incididunt sit adipisicing excepteur occaecat velit laboris esse commodo laboris consectetur aliquip ad duis laborum tempor magna quis ut sint consectetur labore veniam commodo tempor magna fugiat veniam fugiat'
   },
   {
-    name: 'Winters',
+    name: 'Kinney',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 3275,
+    category: 'home',
     description:
-      'Irure voluptate laborum minim sunt et. Non adipisicing nulla aliquip pariatur officia do irure eu pariatur eu. Mollit labore veniam amet anim labore qui labore minim officia esse. Duis ut veniam ipsum sit voluptate elit cillum laborum eiusmod in cillum aliquip consequat incididunt. Et ullamco veniam ipsum amet fugiat irure voluptate.\r\n',
-    price: 2924,
-    category: 'mollit'
+      'mollit mollit elit esse do pariatur velit duis sint consectetur deserunt est mollit elit ullamco id ex in minim pariatur dolor elit quis aute incididunt Lorem eiusmod irure adipisicing sit quis nostrud occaecat adipisicing est'
   },
   {
-    name: 'Dona',
+    name: 'Perkins',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 627,
+    category: 'body',
     description:
-      'Anim adipisicing ex quis pariatur pariatur laborum nostrud eiusmod magna incididunt commodo elit proident. Lorem Lorem voluptate aliqua amet fugiat minim eu ea quis aliqua esse enim anim. Aliquip veniam non sint eiusmod proident aliqua nostrud ipsum Lorem reprehenderit. Qui occaecat tempor quis magna aliquip dolor aute tempor velit commodo commodo.\r\n',
-    price: 2493,
-    category: 'eiusmod'
-  },
-  {
-    name: 'Gertrude',
-    description:
-      'Commodo culpa dolore aute velit mollit ex duis cupidatat reprehenderit minim nisi. Occaecat enim qui exercitation culpa culpa quis enim sint adipisicing do eu dolore. Amet adipisicing incididunt elit mollit consequat dolor cupidatat mollit veniam consectetur duis reprehenderit aliquip. Mollit duis deserunt cillum tempor esse sunt laborum. Nostrud nisi Lorem sunt aute laboris.\r\n',
-    price: 3673,
-    category: 'quis'
-  },
-  {
-    name: 'Hays',
-    description:
-      'Deserunt pariatur in officia est cupidatat aliquip velit excepteur. In consectetur Lorem do ullamco non consequat magna nisi cupidatat incididunt id. Amet culpa dolor cupidatat ullamco cillum incididunt voluptate cillum tempor. Ea culpa anim ea enim labore sunt velit commodo.\r\n',
-    price: 990,
-    category: 'aliquip'
-  },
-  {
-    name: 'English',
-    description:
-      'Commodo enim elit ad Lorem eiusmod incididunt adipisicing sint ad. Laborum aliqua aliquip exercitation consectetur deserunt ea incididunt magna labore culpa. Est adipisicing eiusmod aliquip quis proident tempor culpa proident ad sint do dolore. Dolore do in ad culpa eu consectetur. Magna fugiat id nisi qui esse mollit enim officia aliquip mollit tempor non reprehenderit. Non mollit aute duis non id velit.\r\n',
-    price: 1391,
-    category: 'nostrud'
-  },
-  {
-    name: 'Long',
-    description:
-      'Pariatur voluptate esse pariatur officia incididunt mollit excepteur non minim enim quis voluptate adipisicing culpa. Et deserunt aliqua consectetur voluptate ipsum laboris. Et Lorem incididunt velit ullamco do sunt laborum elit occaecat cupidatat nostrud proident.\r\n',
-    price: 2545,
-    category: 'mollit'
-  },
-  {
-    name: 'April',
-    description:
-      'Lorem voluptate Lorem adipisicing cillum proident enim aliquip consequat sit. Enim eu fugiat anim in officia sunt eu velit adipisicing culpa non ipsum aute ad. Ad magna adipisicing eiusmod tempor nostrud fugiat cupidatat.\r\n',
-    price: 3290,
-    category: 'irure'
-  },
-  {
-    name: 'Delores',
-    description:
-      'In ut reprehenderit proident ullamco aliquip esse. Dolor ex nostrud ad nostrud irure minim consectetur dolore. Fugiat laboris mollit tempor quis id nisi magna dolor excepteur. Nisi velit id nisi ad sit dolor pariatur commodo magna excepteur in cupidatat cupidatat mollit. Officia esse sint laboris ullamco commodo culpa incididunt laboris tempor proident. Laboris nulla magna officia sit proident elit Lorem et nisi duis.\r\n',
-    price: 2207,
-    category: 'excepteur'
-  },
-  {
-    name: 'Lucille',
-    description:
-      'Irure irure irure aliquip eu laboris. Cupidatat aliquip dolore aliqua dolore est eiusmod est. Quis ut elit dolore cupidatat qui id laboris occaecat nisi. Sint eiusmod culpa incididunt consectetur voluptate eiusmod. Ex nisi aute tempor nostrud duis excepteur. Sunt nostrud eu eiusmod labore reprehenderit eu consequat occaecat elit ullamco deserunt laborum.\r\n',
-    price: 1949,
-    category: 'enim'
-  },
-  {
-    name: 'Sadie',
-    description:
-      'Lorem mollit excepteur mollit aliqua qui nostrud incididunt non in duis do deserunt ullamco. Ex laboris irure ex culpa excepteur velit culpa nulla voluptate magna eiusmod sint mollit. In aute cupidatat sit deserunt nostrud proident. Laborum cupidatat adipisicing mollit magna. Esse quis ut cillum ad ex. Do esse ad aliquip ipsum veniam adipisicing magna consectetur ad.\r\n',
-    price: 3859,
-    category: 'est'
-  },
-  {
-    name: 'Alfreda',
-    description:
-      'Lorem nostrud consectetur ipsum nulla proident eiusmod incididunt officia qui eu. Reprehenderit dolor duis quis eu anim id duis sint duis consectetur tempor non reprehenderit amet. Excepteur velit labore commodo nulla in officia ea excepteur incididunt non voluptate.\r\n',
-    price: 437,
-    category: 'sunt'
-  },
-  {
-    name: 'Jensen',
-    description:
-      'Esse nulla quis dolor ad. Pariatur amet duis consectetur est incididunt culpa nostrud occaecat. Laborum commodo enim aliquip est ipsum nostrud est mollit elit laboris. Adipisicing officia adipisicing esse enim nulla ut amet consequat veniam veniam incididunt. Ex cillum labore amet fugiat consequat fugiat elit mollit sunt anim et. Fugiat est adipisicing exercitation cupidatat enim eiusmod deserunt. Labore commodo enim duis aliqua ex.\r\n',
-    price: 2519,
-    category: 'excepteur'
-  },
-  {
-    name: 'Carly',
-    description:
-      'Esse qui consectetur ea commodo dolore elit eu est. Eiusmod ut sunt mollit consectetur deserunt consequat id nisi laboris exercitation incididunt aliquip. Voluptate veniam incididunt amet eiusmod ullamco Lorem in deserunt. Ad cillum incididunt enim excepteur do ex. Laboris sint ipsum veniam aute irure sit Lorem ipsum eu. Minim non et enim nulla consequat cillum sit veniam consectetur esse. Sit labore culpa Lorem aute proident irure dolore deserunt culpa dolor irure dolor tempor pariatur.\r\n',
-    price: 365,
-    category: 'anim'
-  },
-  {
-    name: 'Montgomery',
-    description:
-      'Velit dolor sit aliquip sit excepteur. Officia sunt culpa est ipsum amet duis ex commodo sint quis pariatur amet fugiat duis. Voluptate sunt dolore qui consequat non aute fugiat officia irure. Proident aliquip aliquip consequat ea culpa.\r\n',
-    price: 1864,
-    category: 'aliquip'
-  },
-  {
-    name: 'Francis',
-    description:
-      'Irure consequat qui elit officia non. Do aliquip eu exercitation irure ut sit occaecat laboris exercitation. Exercitation Lorem minim voluptate anim pariatur ut exercitation non officia Lorem pariatur. Labore dolore reprehenderit officia sunt id tempor reprehenderit fugiat. Enim nostrud fugiat dolore nisi ipsum. Duis minim tempor est tempor esse voluptate id adipisicing magna dolore mollit dolore sunt aliquip. Laboris deserunt id ea mollit ut mollit anim ad labore nulla excepteur exercitation.\r\n',
-    price: 2067,
-    category: 'Lorem'
-  },
-  {
-    name: 'Castaneda',
-    description:
-      'Ea adipisicing magna cillum laborum voluptate magna elit irure incididunt. Eiusmod mollit exercitation et mollit. Qui cillum laborum nisi ex incididunt ullamco et fugiat ex culpa ea minim excepteur. Fugiat exercitation officia sint est aliqua exercitation velit.\r\n',
-    price: 513,
-    category: 'ipsum'
-  },
-  {
-    name: 'Holly',
-    description:
-      'Veniam commodo id reprehenderit eiusmod minim dolore. Commodo est anim fugiat in. Do proident exercitation est duis ipsum cupidatat ut aliqua ea irure nisi voluptate. Lorem culpa pariatur id ex proident mollit adipisicing reprehenderit eiusmod excepteur velit. Fugiat enim Lorem voluptate sint irure exercitation quis consectetur cupidatat reprehenderit in aute eu.\r\n',
-    price: 3472,
-    category: 'irure'
+      'Lorem occaecat incididunt ut cupidatat ad aute fugiat ipsum tempor laborum duis duis nulla tempor Lorem fugiat sint occaecat enim tempor exercitation consequat pariatur proident sint qui ullamco cillum est ex ex fugiat commodo proident'
   },
   {
     name: 'Kidd',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 2755,
+    category: 'home',
     description:
-      'Est incididunt consequat in cillum labore laborum fugiat in incididunt nisi. Elit eu reprehenderit sit incididunt minim labore nulla labore esse quis eiusmod velit aute nostrud. Consectetur in deserunt culpa sit. Laboris minim aliquip duis occaecat fugiat labore fugiat nostrud ea commodo quis quis deserunt ad.\r\n',
-    price: 3010,
-    category: 'dolor'
+      'aliquip occaecat duis in ea ad amet laborum ad reprehenderit quis dolor elit Lorem laboris ex ut ea et id fugiat duis fugiat esse fugiat ipsum culpa Lorem culpa laboris incididunt minim enim tempor tempor'
   },
   {
-    name: 'Riley',
+    name: 'Miranda',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 2711,
+    category: 'home',
     description:
-      'Eiusmod sunt in deserunt excepteur cillum enim occaecat id occaecat et dolore excepteur. Commodo officia deserunt cillum pariatur. Laborum fugiat laboris culpa reprehenderit veniam non eiusmod do ut minim commodo Lorem. Dolore ut amet officia dolor ea. Esse mollit deserunt dolor et est quis minim dolor aute. Quis qui minim nostrud ut excepteur occaecat laboris eiusmod excepteur consequat minim. Proident pariatur voluptate cupidatat elit fugiat proident consectetur pariatur aliquip excepteur.\r\n',
-    price: 1584,
-    category: 'labore'
+      'minim proident cillum aliquip ea excepteur sint deserunt sit aliqua veniam eiusmod incididunt culpa veniam est officia minim enim commodo culpa commodo aute deserunt eu duis et qui aliquip magna do ad do anim nulla'
   },
   {
-    name: 'Mann',
+    name: 'Stanley',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 2296,
+    category: 'body',
     description:
-      'Voluptate nulla minim excepteur id velit consequat. Ut cupidatat voluptate mollit excepteur tempor. Et adipisicing aliqua aliqua quis duis anim qui velit do velit occaecat dolore proident. Laborum enim esse ut excepteur incididunt proident aliqua laboris in elit eu. Qui labore aliquip amet occaecat Lorem do. Duis ut fugiat sit deserunt veniam ullamco amet dolor enim.\r\n',
-    price: 988,
-    category: 'sit'
+      'fugiat Lorem consectetur tempor sint labore sit deserunt est eiusmod magna nulla nisi culpa dolore eiusmod qui et ea ut adipisicing pariatur dolor exercitation velit proident nostrud est nostrud nostrud eu do consectetur cupidatat ullamco'
   },
   {
-    name: 'Mckee',
+    name: 'Jones',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 2482,
+    category: 'body',
     description:
-      'Id sunt enim dolor tempor. Adipisicing irure proident nisi pariatur nostrud ullamco est aute velit. Ullamco deserunt cupidatat ea labore ullamco commodo cillum. Magna minim id nulla eiusmod Lorem magna nisi id cupidatat. Adipisicing nisi dolor duis amet consectetur cillum mollit voluptate veniam in anim sit id Lorem.\r\n',
-    price: 2698,
-    category: 'eiusmod'
+      'proident eu irure aute quis enim magna duis Lorem ex tempor id elit ullamco minim tempor Lorem consequat officia consequat non aliqua id qui laborum exercitation commodo consectetur fugiat veniam velit fugiat nisi excepteur nisi'
   },
   {
-    name: 'Marylou',
+    name: 'Avila',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 740,
+    category: 'face',
     description:
-      'Fugiat sit sit non Lorem Lorem. Adipisicing cupidatat cupidatat fugiat nostrud laborum non. Lorem cillum quis cupidatat sit duis adipisicing fugiat adipisicing officia. Veniam dolor magna ea proident. Enim mollit ex reprehenderit amet ad anim eu sint ut sint fugiat magna.\r\n',
-    price: 1027,
-    category: 'velit'
+      'id pariatur sunt duis ut eu qui elit ad ex ad et aliqua id deserunt duis est dolore quis minim ut eu amet sint minim pariatur excepteur sint labore commodo aliquip aute dolor eu quis'
+  },
+  {
+    name: 'Wong',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 1892,
+    category: 'face',
+    description:
+      'est consequat mollit incididunt ad ad magna ea exercitation ullamco reprehenderit anim duis mollit do duis ex fugiat in magna commodo mollit ullamco id cupidatat in sint deserunt irure pariatur anim amet ea minim tempor'
+  },
+  {
+    name: 'Fischer',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 2964,
+    category: 'face',
+    description:
+      'enim cupidatat id consectetur enim sint magna aliqua voluptate qui mollit magna magna laborum veniam voluptate laborum officia irure non Lorem qui sint ut laborum cupidatat dolore eu ipsum Lorem sit aute ex est magna'
+  },
+  {
+    name: 'Gutierrez',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 1840,
+    category: 'face',
+    description:
+      'laborum consectetur sint deserunt excepteur tempor reprehenderit sunt aliqua laborum eu mollit occaecat duis sit aliqua id deserunt enim elit amet in laboris consequat commodo cillum ea sunt consectetur sunt sunt incididunt laboris deserunt anim'
+  },
+  {
+    name: 'Terry',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 3599,
+    category: 'home',
+    description:
+      'labore occaecat dolor labore in reprehenderit eiusmod reprehenderit duis cupidatat adipisicing officia ipsum ipsum ex culpa ex est ad magna ex sit aute irure est exercitation voluptate tempor do quis deserunt ullamco elit ea eiusmod'
+  },
+  {
+    name: 'Gould',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 3280,
+    category: 'home',
+    description:
+      'excepteur veniam eiusmod ipsum consequat adipisicing velit Lorem adipisicing labore duis enim magna incididunt nulla magna aliqua consequat in amet Lorem dolore mollit magna reprehenderit incididunt aliquip est mollit proident anim eu consectetur exercitation pariatur'
+  },
+  {
+    name: 'Stephens',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 2254,
+    category: 'home',
+    description:
+      'velit mollit irure ex ipsum eiusmod reprehenderit labore nisi magna consectetur in irure dolore duis veniam in dolor exercitation voluptate dolore veniam ea excepteur nostrud consectetur nisi ipsum aliquip dolor quis aliqua qui proident elit'
+  },
+  {
+    name: 'Rutledge',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 1306,
+    category: 'body',
+    description:
+      'commodo ex ad cillum magna dolore officia duis qui deserunt do Lorem aliqua consectetur aliqua elit dolore sunt eiusmod adipisicing voluptate irure duis nostrud reprehenderit voluptate cupidatat enim excepteur quis ipsum consectetur aute do eu'
+  },
+  {
+    name: 'Lester',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 1221,
+    category: 'home',
+    description:
+      'fugiat reprehenderit ut consectetur id incididunt consequat velit enim amet excepteur veniam sit non do exercitation dolore culpa irure commodo deserunt minim anim cillum et non consequat minim excepteur elit nisi minim ad laboris ullamco'
+  },
+  {
+    name: 'Coffey',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 1623,
+    category: 'body',
+    description:
+      'ad minim occaecat consequat nulla sit ut laborum labore culpa anim sunt id incididunt sunt ea sunt pariatur sunt sunt Lorem in veniam dolor nostrud et quis sit duis eiusmod pariatur magna et magna veniam'
+  },
+  {
+    name: 'Trevino',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 3572,
+    category: 'body',
+    description:
+      'deserunt commodo minim sunt veniam id aliqua dolore sunt sunt aliqua velit in aute nisi officia aliquip mollit amet qui laboris nulla fugiat adipisicing deserunt eu ipsum cupidatat ex deserunt id dolore magna eu cillum'
+  },
+  {
+    name: 'English',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 3085,
+    category: 'body',
+    description:
+      'amet commodo deserunt sint ad aute dolore ad consectetur officia sit velit nulla labore ad nisi quis in ad ut ullamco fugiat aliqua occaecat qui ex eu dolore et exercitation et sunt eu reprehenderit excepteur'
+  },
+  {
+    name: 'Valenzuela',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 1338,
+    category: 'body',
+    description:
+      'aliqua non voluptate mollit ex deserunt reprehenderit minim labore eu nostrud cupidatat ipsum occaecat nulla nostrud duis officia irure exercitation deserunt sint ullamco in id ad officia exercitation deserunt voluptate sint irure labore pariatur sit'
+  },
+  {
+    name: 'Blevins',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 2302,
+    category: 'home',
+    description:
+      'commodo ad enim minim Lorem sint excepteur nostrud eiusmod commodo exercitation deserunt qui non eiusmod laborum amet magna magna qui reprehenderit culpa duis culpa anim eu qui enim laborum culpa exercitation esse ad laborum nulla'
+  },
+  {
+    name: 'Walsh',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 1058,
+    category: 'face',
+    description:
+      'sint aute et do qui et nulla reprehenderit deserunt incididunt ipsum pariatur qui do cillum non sunt eiusmod aliquip enim labore tempor aliqua reprehenderit labore velit nostrud deserunt id pariatur incididunt mollit ad commodo qui'
+  },
+  {
+    name: 'Bridges',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 2837,
+    category: 'body',
+    description:
+      'elit sit commodo eiusmod aute fugiat qui aliqua minim cupidatat aliqua et ipsum et occaecat exercitation in adipisicing nostrud duis aliquip est cillum consequat eiusmod Lorem quis nostrud consectetur cillum nulla id sint et consequat'
+  },
+  {
+    name: 'Nicholson',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 3074,
+    category: 'home',
+    description:
+      'tempor culpa ad ipsum ad laborum deserunt tempor enim culpa irure laboris cillum cupidatat nostrud incididunt culpa ea minim ut exercitation est esse dolore ad eiusmod voluptate proident sint duis occaecat pariatur elit sit aliquip'
+  },
+  {
+    name: 'Mcdowell',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 623,
+    category: 'body',
+    description:
+      'Lorem dolor commodo quis exercitation tempor dolore occaecat et sint ex minim aliquip ut exercitation quis in duis eiusmod duis reprehenderit velit esse officia excepteur enim cupidatat dolore qui cillum irure quis elit anim anim'
+  },
+  {
+    name: 'Sellers',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 2603,
+    category: 'face',
+    description:
+      'cupidatat cupidatat laborum do nulla nulla commodo officia eiusmod sint culpa culpa eu enim sint anim occaecat eu laborum aliqua quis sunt excepteur minim deserunt consectetur nostrud enim id ut proident deserunt veniam adipisicing cupidatat'
+  },
+  {
+    name: 'Wheeler',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 3048,
+    category: 'home',
+    description:
+      'dolor pariatur excepteur duis id nisi cupidatat ipsum consequat dolor minim voluptate aliqua nulla non anim officia enim quis id commodo aliquip velit quis elit consectetur in ex ex magna duis culpa nostrud nulla cillum'
+  },
+  {
+    name: 'Mcfarland',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 1213,
+    category: 'body',
+    description:
+      'Lorem laboris in aliquip adipisicing sint laborum Lorem reprehenderit in fugiat deserunt ut consequat et in et commodo esse do irure est reprehenderit sunt proident mollit aliqua adipisicing aute exercitation consectetur exercitation ipsum velit est'
+  },
+  {
+    name: 'Alvarado',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 1083,
+    category: 'home',
+    description:
+      'duis qui mollit amet aliquip eiusmod nostrud pariatur reprehenderit aliqua duis dolor aliquip esse consequat dolor et Lorem irure anim amet laborum fugiat et excepteur aute ex cillum ex sit deserunt aliqua dolore aliquip ex'
+  },
+  {
+    name: 'Rose',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 2459,
+    category: 'face',
+    description:
+      'ut Lorem adipisicing cupidatat est consequat deserunt id voluptate officia esse ex fugiat sit fugiat ea consectetur aliquip dolor ullamco aliquip consectetur excepteur laboris sunt aute culpa voluptate deserunt anim eiusmod nulla sunt ad Lorem'
+  },
+  {
+    name: 'Calhoun',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 682,
+    category: 'home',
+    description:
+      'commodo laboris consectetur consectetur ipsum ex aute quis nisi occaecat sint in est ipsum cupidatat id do minim ad ut excepteur eu culpa cillum labore culpa quis officia esse ullamco eu eu est non tempor'
+  },
+  {
+    name: 'Flowers',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 611,
+    category: 'home',
+    description:
+      'in sint est consequat exercitation pariatur fugiat nostrud sunt id exercitation cillum ex tempor velit officia laboris et et enim ut deserunt ex enim reprehenderit culpa eu duis sit sunt nostrud adipisicing commodo minim id'
+  },
+  {
+    name: 'Norris',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 728,
+    category: 'home',
+    description:
+      'excepteur est velit occaecat laboris ad sint quis consequat duis eu magna est duis consequat excepteur duis labore quis cillum qui ea est labore tempor ex culpa sit proident reprehenderit officia consectetur velit proident commodo'
+  },
+  {
+    name: 'Chambers',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 1074,
+    category: 'home',
+    description:
+      'duis dolor non consectetur ad ea reprehenderit et incididunt ex aliqua cillum consectetur est incididunt aute eu aliqua aliqua dolore culpa laboris nulla aute dolor quis id excepteur elit laborum quis laboris ea veniam ut'
+  },
+  {
+    name: 'Garrett',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 1722,
+    category: 'body',
+    description:
+      'voluptate cillum labore anim pariatur laborum ipsum minim eu do ipsum aute amet dolore eiusmod eiusmod elit ad laborum laboris velit sint minim sit adipisicing fugiat mollit laborum amet elit officia sunt mollit ex sint'
+  },
+  {
+    name: 'Sullivan',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 2236,
+    category: 'home',
+    description:
+      'labore velit incididunt duis nisi ex ipsum occaecat duis irure magna cillum consectetur ipsum officia id fugiat aute proident deserunt exercitation quis mollit Lorem adipisicing consequat minim dolor esse enim cupidatat deserunt aliquip sint occaecat'
+  },
+  {
+    name: 'Moss',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 2126,
+    category: 'face',
+    description:
+      'voluptate sit pariatur laborum non cupidatat aliquip ea et mollit aliqua id id aliquip eu occaecat aute incididunt aute ad cillum ex dolore incididunt dolor amet culpa est pariatur consequat sunt occaecat ad tempor labore'
+  },
+  {
+    name: 'Pearson',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 2439,
+    category: 'face',
+    description:
+      'excepteur consequat velit commodo mollit cupidatat non minim eu est reprehenderit labore cillum duis fugiat dolor culpa aute consectetur commodo do eiusmod minim consectetur duis cupidatat labore magna veniam aute aliquip ullamco proident eu duis'
+  },
+  {
+    name: 'Mcgowan',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 1881,
+    category: 'face',
+    description:
+      'quis nulla voluptate commodo proident reprehenderit amet dolore commodo mollit irure qui minim et elit incididunt labore do nisi qui et aute commodo qui eu cillum dolor velit duis qui pariatur cupidatat consequat nulla proident'
+  },
+  {
+    name: 'Macdonald',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 2474,
+    category: 'home',
+    description:
+      'dolor non ullamco ex consectetur aute eiusmod velit veniam elit nisi adipisicing minim veniam mollit id in mollit consectetur nostrud voluptate magna irure sit est magna consequat est quis aliqua tempor pariatur officia laborum id'
+  },
+  {
+    name: 'Lewis',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 1312,
+    category: 'face',
+    description:
+      'ullamco officia adipisicing consectetur cupidatat laboris ea eiusmod laborum officia dolore eiusmod aute laborum esse minim incididunt incididunt consequat aliqua irure in et ea proident nulla in ullamco ex ut labore proident esse irure esse'
+  },
+  {
+    name: 'Sawyer',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 2868,
+    category: 'face',
+    description:
+      'cillum Lorem consectetur elit consectetur exercitation ex dolor aute qui nostrud id aliqua minim laboris adipisicing et qui ipsum proident ipsum dolore cupidatat anim dolor aliqua ullamco ut nulla qui pariatur nulla officia tempor est'
+  },
+  {
+    name: 'Roy',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 2701,
+    category: 'home',
+    description:
+      'sunt sunt ex non Lorem esse qui adipisicing mollit reprehenderit quis velit do nisi anim amet elit exercitation nulla culpa pariatur laboris adipisicing aliquip elit consectetur cupidatat ex culpa est incididunt amet aliqua do laboris'
+  },
+  {
+    name: 'Espinoza',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 3222,
+    category: 'home',
+    description:
+      'aute cillum incididunt quis do velit commodo sit tempor laborum excepteur duis nisi nisi pariatur anim proident fugiat nostrud eiusmod anim velit consectetur qui sint irure adipisicing amet magna quis proident nisi enim minim commodo'
+  },
+  {
+    name: 'Albert',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 3294,
+    category: 'face',
+    description:
+      'consequat aliquip cupidatat commodo enim consequat consequat aliqua sint consequat in esse consequat adipisicing velit non elit eiusmod adipisicing mollit id laboris sint aliqua sunt anim occaecat non officia qui sunt qui consectetur est labore'
+  },
+  {
+    name: 'Lee',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 1405,
+    category: 'face',
+    description:
+      'non voluptate dolor aute aliquip commodo cillum et exercitation amet duis dolor quis laboris labore dolore nostrud non voluptate sit irure magna est anim ex ad enim sit esse eiusmod minim Lorem culpa consectetur aute'
+  },
+  {
+    name: 'Carpenter',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 2281,
+    category: 'body',
+    description:
+      'commodo non sint dolor nulla minim aliquip culpa sunt est nulla dolor culpa do id excepteur dolor adipisicing mollit fugiat tempor eu Lorem et labore culpa adipisicing officia nostrud nisi irure Lorem velit commodo cillum'
+  },
+  {
+    name: 'Newman',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 1697,
+    category: 'face',
+    description:
+      'esse minim incididunt elit quis cillum ipsum magna fugiat culpa aute duis amet eu nisi esse sunt reprehenderit velit ea aliqua ad ea laborum occaecat elit id sint fugiat ex ea Lorem fugiat amet anim'
+  },
+  {
+    name: 'Nash',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 3111,
+    category: 'body',
+    description:
+      'ad sint laboris fugiat consequat pariatur amet pariatur eiusmod cillum aliqua eiusmod eiusmod proident labore est labore tempor tempor laboris proident id occaecat officia ad occaecat anim deserunt id veniam adipisicing do Lorem minim occaecat'
+  },
+  {
+    name: 'Hampton',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 1052,
+    category: 'body',
+    description:
+      'labore ad ut incididunt nisi velit non cupidatat id ut adipisicing proident aliquip sit irure aliqua aute sit duis qui dolore do et ea magna cillum minim labore sit ea id do consectetur ea consectetur'
+  },
+  {
+    name: 'Underwood',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 3161,
+    category: 'body',
+    description:
+      'labore enim fugiat pariatur tempor irure officia minim ad nulla dolor ex Lorem incididunt aute quis anim id Lorem occaecat cillum pariatur in excepteur duis eiusmod excepteur anim enim Lorem irure laboris enim pariatur magna'
+  },
+  {
+    name: 'Spears',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 3056,
+    category: 'body',
+    description:
+      'mollit officia nostrud fugiat et fugiat aute eu ad commodo commodo duis proident eiusmod proident nulla velit ullamco exercitation in voluptate Lorem sunt nulla veniam laboris officia voluptate cillum duis duis incididunt esse cillum do'
+  },
+  {
+    name: 'Wall',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 2284,
+    category: 'home',
+    description:
+      'velit do velit proident sit esse in qui excepteur deserunt deserunt non occaecat excepteur Lorem do eu cillum deserunt laboris aliqua ut non culpa cillum mollit ad duis occaecat dolor elit et anim qui et'
+  },
+  {
+    name: 'Woodward',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 1877,
+    category: 'body',
+    description:
+      'Lorem irure cillum sint ipsum Lorem qui fugiat aliqua Lorem ad amet labore dolore ea cupidatat ut non magna occaecat esse quis laboris cillum in fugiat aliquip laboris officia non ullamco enim irure Lorem Lorem'
+  },
+  {
+    name: 'Koch',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 2825,
+    category: 'body',
+    description:
+      'eiusmod ad fugiat ipsum non veniam minim esse in quis commodo aute Lorem exercitation eiusmod tempor tempor sit laboris ullamco officia Lorem est qui magna Lorem nostrud do ad fugiat aute in Lorem velit dolor'
+  },
+  {
+    name: 'Rhodes',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 1458,
+    category: 'home',
+    description:
+      'nisi laborum cupidatat magna et laborum ullamco quis est ut enim consequat veniam dolore laborum nostrud excepteur ad minim aute magna fugiat reprehenderit amet Lorem pariatur et pariatur fugiat esse laborum commodo eiusmod officia aliqua'
+  },
+  {
+    name: 'Houston',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 776,
+    category: 'face',
+    description:
+      'do aliqua voluptate ipsum voluptate anim ad laborum proident veniam ea commodo duis cillum laboris labore nulla aliquip ut excepteur ipsum reprehenderit veniam culpa laboris commodo excepteur ullamco irure ut cupidatat ullamco nisi et nulla'
+  },
+  {
+    name: 'Alexander',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 2393,
+    category: 'home',
+    description:
+      'amet incididunt sit elit et ex do excepteur ipsum dolore nisi irure voluptate esse ut excepteur minim mollit duis duis eiusmod tempor enim officia commodo culpa labore Lorem do irure enim dolor officia elit sint'
+  },
+  {
+    name: 'Brooks',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 1007,
+    category: 'body',
+    description:
+      'consequat excepteur cupidatat sint velit do aliquip magna consectetur sit velit exercitation ut quis cupidatat sunt dolor commodo aliquip nulla ex quis eu sit ea aliquip elit non commodo officia voluptate minim dolor id sint'
+  },
+  {
+    name: 'Martinez',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 2381,
+    category: 'home',
+    description:
+      'pariatur qui incididunt exercitation irure tempor sunt ut ut pariatur et Lorem non reprehenderit nostrud non enim consectetur adipisicing esse reprehenderit exercitation dolor ut commodo nulla laborum officia ea dolor quis in ipsum laboris veniam'
+  },
+  {
+    name: 'Doyle',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 652,
+    category: 'home',
+    description:
+      'aliqua exercitation voluptate labore sint laboris laboris id Lorem mollit laborum sint ullamco aliqua officia eu cupidatat aute consequat do in duis nulla eiusmod elit deserunt adipisicing qui enim dolor laborum officia minim ea do'
+  },
+  {
+    name: 'Robertson',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 2208,
+    category: 'face',
+    description:
+      'ipsum velit minim adipisicing deserunt proident ad exercitation duis culpa officia fugiat sint labore Lorem non ea nisi est consequat mollit dolor qui nulla duis dolor non excepteur enim ut amet laboris ut aliquip ut'
+  },
+  {
+    name: 'Burnett',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 949,
+    category: 'body',
+    description:
+      'amet occaecat pariatur cillum anim fugiat labore consectetur fugiat quis deserunt non tempor elit est adipisicing proident mollit voluptate anim dolor sint qui duis incididunt reprehenderit sit excepteur cillum minim duis commodo aliqua non sit'
+  },
+  {
+    name: 'Dorsey',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 2067,
+    category: 'face',
+    description:
+      'reprehenderit sint dolor est nostrud officia cillum consectetur mollit sunt et quis duis exercitation ullamco anim officia aliqua duis dolore veniam quis officia exercitation quis nulla elit sint tempor ut tempor ex Lorem do velit'
+  },
+  {
+    name: 'Dickson',
+    imageUrl: 'https://i.ibb.co/DtSq6bt/eye-cream.jpg',
+    price: 3511,
+    category: 'face',
+    description:
+      'aute ut amet minim qui ea elit cillum id ullamco elit adipisicing eiusmod proident commodo est eiusmod consequat non reprehenderit anim mollit sit sit in dolor pariatur nulla eiusmod eu incididunt reprehenderit officia anim dolore'
+  },
+  {
+    name: 'Acevedo',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 3244,
+    category: 'body',
+    description:
+      'aliqua irure elit do mollit officia nisi culpa ipsum aute veniam dolore velit quis consequat velit ipsum pariatur et nulla consectetur cillum nulla excepteur aute quis esse cillum commodo est velit consectetur ad mollit duis'
+  },
+  {
+    name: 'Reynolds',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 2583,
+    category: 'home',
+    description:
+      'dolore anim consectetur et nisi fugiat nostrud qui reprehenderit velit minim quis anim id quis cillum ut eiusmod do duis cillum consequat velit exercitation id et in laboris voluptate reprehenderit excepteur cillum amet Lorem nostrud'
+  },
+  {
+    name: 'Armstrong',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 2733,
+    category: 'face',
+    description:
+      'culpa quis adipisicing excepteur minim exercitation non velit consequat eu excepteur exercitation dolor enim consequat et dolore reprehenderit sunt fugiat veniam mollit velit est est tempor ut sit laborum elit proident qui consectetur nisi velit'
+  },
+  {
+    name: 'Meyers',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 1475,
+    category: 'face',
+    description:
+      'reprehenderit veniam eiusmod aute magna consectetur ad aliquip labore nisi magna dolor commodo sint mollit mollit in elit dolore sit occaecat irure enim ea amet eu laboris officia amet adipisicing eu consequat est sit tempor'
+  },
+  {
+    name: 'Harvey',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 2616,
+    category: 'face',
+    description:
+      'cillum sunt do id officia culpa duis do nostrud et eu non eiusmod do culpa quis adipisicing esse exercitation incididunt ea quis proident ex nostrud elit dolor eiusmod laborum dolore consequat duis proident est et'
+  },
+  {
+    name: 'Miles',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 2487,
+    category: 'body',
+    description:
+      'velit ipsum eu eiusmod cupidatat labore voluptate incididunt nisi ipsum aute id Lorem aute exercitation irure do cillum pariatur non nisi culpa ad veniam sunt cupidatat proident sunt amet nisi magna sit occaecat deserunt et'
+  },
+  {
+    name: 'Kemp',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 849,
+    category: 'face',
+    description:
+      'reprehenderit cillum in mollit voluptate commodo cupidatat labore nulla tempor deserunt laborum nisi proident dolor tempor nisi ipsum excepteur consectetur ut exercitation ullamco do ipsum ad amet eiusmod excepteur esse tempor amet irure et amet'
   },
   {
     name: 'Steele',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 3212,
+    category: 'body',
     description:
-      'Ad anim labore qui elit ullamco. Duis nulla quis minim ea culpa ad. Non eu culpa qui est irure adipisicing laborum labore do reprehenderit aute culpa laborum sit. Labore laborum reprehenderit mollit occaecat occaecat ad Lorem consequat. Commodo nostrud incididunt amet fugiat ea. Lorem veniam duis in adipisicing.\r\n',
-    price: 2870,
-    category: 'irure'
+      'do laborum officia occaecat ea sit magna laboris ex consectetur sit exercitation Lorem Lorem Lorem reprehenderit sint pariatur aliqua minim deserunt deserunt ut consequat reprehenderit qui ullamco occaecat aute Lorem aliquip Lorem fugiat aliquip labore'
   },
   {
-    name: 'Ericka',
+    name: 'Bruce',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 2153,
+    category: 'face',
     description:
-      'Pariatur nostrud sint commodo et enim labore aute velit anim ut. Sunt esse pariatur reprehenderit aliqua in aute laboris cillum pariatur minim Lorem. Sint veniam id qui consequat fugiat incididunt sit non magna.\r\n',
-    price: 452,
-    category: 'ea'
+      'est aute ea deserunt enim consectetur pariatur labore occaecat adipisicing quis ullamco non eu cupidatat in irure eiusmod eu sint enim ex tempor officia incididunt commodo irure elit labore qui voluptate proident sit occaecat elit'
   },
   {
-    name: 'Medina',
+    name: 'French',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 810,
+    category: 'face',
     description:
-      'Do quis enim ipsum amet dolore proident Lorem consectetur cillum ullamco cupidatat ad. Proident ut reprehenderit cupidatat voluptate. Aliquip incididunt nostrud magna veniam qui eu nulla nostrud ut. Velit veniam deserunt incididunt duis nostrud cupidatat cillum eu ipsum nulla id. Veniam pariatur ut minim minim amet enim aute eiusmod nostrud duis nisi pariatur ullamco. Anim magna labore reprehenderit quis.\r\n',
-    price: 1911,
-    category: 'aliquip'
+      'occaecat elit cillum mollit ullamco enim nostrud non do mollit laborum reprehenderit magna eiusmod excepteur velit Lorem esse minim anim cillum sit nostrud ut magna eu duis nostrud aliquip officia consequat exercitation minim sint qui'
   },
   {
-    name: 'Kirkland',
+    name: 'Holmes',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 2912,
+    category: 'body',
     description:
-      'Proident qui incididunt pariatur voluptate et quis. Deserunt fugiat aliqua do eu eu occaecat dolore aliqua. Nostrud eu voluptate ad et pariatur aliquip magna reprehenderit cillum velit irure deserunt dolor.\r\n',
-    price: 1818,
-    category: 'labore'
+      'exercitation est enim labore id mollit aliqua irure ullamco sint aliqua sint culpa id dolor minim velit quis qui deserunt consectetur sunt minim et do do culpa aute exercitation elit in consectetur cillum laboris velit'
   },
   {
-    name: 'Nona',
+    name: 'Cole',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 3548,
+    category: 'home',
     description:
-      'Sit ea officia sunt adipisicing ea reprehenderit qui nulla consequat. Deserunt occaecat amet ut nostrud est tempor nulla aliquip dolore sit minim anim consectetur eiusmod. Reprehenderit labore aliquip reprehenderit pariatur qui incididunt dolore aliqua officia. Veniam ut non exercitation in fugiat quis voluptate voluptate. Quis Lorem do magna nisi cillum magna irure duis eiusmod sint eu.\r\n',
-    price: 3700,
-    category: 'ad'
+      'duis culpa duis reprehenderit eiusmod labore fugiat ea sint aute tempor irure labore qui et cupidatat excepteur mollit ullamco labore magna incididunt excepteur anim ex sunt reprehenderit incididunt cillum ullamco esse veniam Lorem Lorem qui'
   },
   {
-    name: 'Ada',
+    name: 'Crane',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 1172,
+    category: 'face',
     description:
-      'Lorem sunt qui ex dolor proident sint culpa exercitation. Dolore irure laborum dolor eu nisi proident. Aute pariatur cillum veniam velit elit sunt. Excepteur nisi aute exercitation minim fugiat. Velit do aute sit reprehenderit sint reprehenderit ex pariatur dolor ullamco est pariatur sit. Consectetur anim ut nostrud eu. Adipisicing elit laboris veniam labore labore in ad magna aute culpa proident.\r\n',
-    price: 1000,
-    category: 'fugiat'
+      'fugiat minim anim elit irure irure excepteur dolore irure aute eiusmod ea sint sunt dolor enim fugiat est sint consectetur incididunt laboris sint nisi culpa sint duis officia ad fugiat est exercitation elit enim consequat'
   },
   {
-    name: 'Ella',
+    name: 'Middleton',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 1409,
+    category: 'body',
     description:
-      'Commodo et sunt aute nulla ad fugiat ullamco esse ipsum nostrud anim est dolore. Officia culpa irure sint veniam proident et velit. Aute deserunt proident reprehenderit minim excepteur pariatur quis ullamco commodo. In cupidatat eiusmod officia nulla Lorem eu ex consectetur excepteur et aliqua. Laborum culpa do esse cupidatat excepteur commodo incididunt irure consequat proident culpa magna est.\r\n',
-    price: 2627,
-    category: 'fugiat'
+      'labore pariatur laborum dolor consequat aliquip consectetur cupidatat incididunt officia deserunt reprehenderit amet nisi ex nostrud esse ad qui deserunt nisi tempor consectetur consectetur voluptate est labore duis est pariatur nisi quis eu voluptate consectetur'
   },
   {
-    name: 'Hill',
+    name: 'Keller',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 3373,
+    category: 'face',
     description:
-      'Excepteur dolor quis irure commodo proident. Eu in occaecat do reprehenderit irure magna labore ad. Aute mollit irure exercitation sint Lorem dolore dolore magna laboris deserunt officia mollit amet esse. Exercitation incididunt ex mollit velit ut officia in ullamco voluptate irure cupidatat voluptate reprehenderit. Reprehenderit aute mollit sit excepteur do irure laboris ex sit sunt consequat cillum est.\r\n',
-    price: 2416,
-    category: 'dolore'
+      'duis mollit ex cupidatat veniam consequat qui dolore eiusmod do ex laborum veniam nisi incididunt adipisicing veniam exercitation aliqua commodo excepteur et anim laboris laborum elit fugiat nostrud magna consectetur aliquip culpa ex magna exercitation'
   },
   {
-    name: 'Catalina',
+    name: 'Morse',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 1853,
+    category: 'body',
     description:
-      'Deserunt fugiat est id magna reprehenderit. Minim laboris fugiat et dolore nisi anim in minim veniam. Cillum consequat dolore voluptate ut pariatur adipisicing est ullamco fugiat cillum tempor. Elit pariatur proident velit et est pariatur duis officia.\r\n',
-    price: 993,
-    category: 'aliqua'
+      'culpa non aliquip ad ad ad elit exercitation minim enim est exercitation deserunt commodo nostrud exercitation cillum reprehenderit do nostrud elit ad nostrud qui non amet laboris qui ea elit irure occaecat officia ex eiusmod'
   },
   {
-    name: 'Levy',
+    name: 'Fuentes',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 992,
+    category: 'body',
     description:
-      'Incididunt deserunt voluptate fugiat proident incididunt amet aliqua deserunt Lorem culpa. Dolore non qui do ad in voluptate ea consequat do labore consectetur. Occaecat laboris occaecat culpa id ea aute commodo eu mollit in in.\r\n',
-    price: 3337,
-    category: 'adipisicing'
+      'labore sunt occaecat incididunt voluptate ullamco consequat do aute incididunt mollit magna enim eu veniam exercitation fugiat laboris eiusmod elit culpa ut est consectetur cupidatat non qui dolore elit laborum proident irure deserunt est laboris'
   },
   {
-    name: 'Hanson',
+    name: 'Barker',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 3291,
+    category: 'face',
     description:
-      'Quis consequat incididunt est esse fugiat culpa sunt nostrud culpa commodo eiusmod occaecat. Occaecat non aute sunt do adipisicing ad non sint voluptate. Non eiusmod voluptate laboris culpa labore elit ea exercitation magna. Veniam fugiat voluptate aliqua sint sit pariatur. Duis dolor do id minim anim esse exercitation commodo mollit laborum veniam mollit aliqua. Cupidatat consectetur ullamco est esse nostrud amet pariatur occaecat. Est exercitation aute irure consequat irure officia.\r\n',
-    price: 1179,
-    category: 'esse'
+      'do occaecat qui veniam amet excepteur nulla magna quis commodo ex nisi tempor aliquip adipisicing tempor in ipsum mollit aliqua eiusmod minim ad minim incididunt aliquip proident aliqua occaecat voluptate enim commodo dolore eiusmod id'
   },
   {
-    name: 'Christy',
+    name: 'Gonzales',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 1061,
+    category: 'home',
     description:
-      'Et non non commodo aliquip eiusmod exercitation id minim laborum ad do est culpa incididunt. Laborum cupidatat ipsum pariatur excepteur occaecat non amet dolor magna nulla velit eu qui sit. Dolor commodo quis aliqua dolore elit anim minim nulla. Consequat labore incididunt nulla dolor nulla tempor ad aliquip occaecat magna. Et fugiat duis cillum eiusmod. Velit sint cillum voluptate dolor sunt aute ullamco culpa labore veniam id ex labore consequat.\r\n',
-    price: 780,
-    category: 'qui'
+      'sit consectetur sit ex proident ea velit Lorem consequat dolore dolor sint consequat irure nostrud deserunt dolor Lorem duis occaecat deserunt cupidatat Lorem nostrud sit amet enim ea elit deserunt esse ipsum est nisi commodo'
   },
   {
-    name: 'Carrie',
+    name: 'Wilder',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 2114,
+    category: 'body',
     description:
-      'Tempor occaecat duis cillum nulla sint non veniam aute velit deserunt. Aliqua irure amet reprehenderit nostrud. Ea sit amet culpa ad consectetur eu nulla elit incididunt nulla. Pariatur eiusmod proident do aliquip aliquip anim in officia quis ipsum laborum. Laboris velit in consectetur sunt dolor in aliqua do et voluptate nostrud commodo irure magna.\r\n',
-    price: 1954,
-    category: 'laboris'
+      'non duis ex officia eu in dolor incididunt excepteur irure deserunt irure cillum excepteur occaecat quis proident enim voluptate reprehenderit tempor commodo aliqua nostrud enim Lorem anim veniam ullamco aliqua amet magna duis cupidatat magna'
   },
   {
-    name: 'Walters',
+    name: 'Ewing',
+    imageUrl: 'https://i.ibb.co/Tvwthkk/lotion.jpg',
+    price: 3033,
+    category: 'body',
     description:
-      'Qui commodo sunt ex occaecat reprehenderit excepteur commodo aute anim excepteur proident. Excepteur quis officia magna qui. Amet voluptate elit id dolor qui irure aute. Occaecat elit labore quis ullamco nulla laboris occaecat sint id ad consectetur ut.\r\n',
-    price: 1995,
-    category: 'commodo'
+      'dolore nisi veniam quis amet ullamco laboris labore excepteur nisi amet non aliquip duis id Lorem commodo aute officia cillum duis duis amet adipisicing nisi commodo veniam velit enim ullamco dolore non et in excepteur'
   },
   {
-    name: 'Leanna',
+    name: 'Cooley',
+    imageUrl: 'https://i.ibb.co/4WM5tJj/hand-cream.png',
+    price: 822,
+    category: 'face',
     description:
-      'Eiusmod sunt duis nulla commodo mollit ea id esse id enim voluptate elit nulla nostrud. Aliquip anim mollit est ex in. Exercitation officia nostrud qui proident elit amet aliquip do esse voluptate dolor consectetur. Est sunt reprehenderit deserunt laboris in et nostrud adipisicing do ullamco. Incididunt eu sit Lorem culpa non in ullamco pariatur consectetur culpa Lorem.\r\n',
-    price: 289,
-    category: 'cupidatat'
+      'consequat tempor amet veniam nisi consequat sit cillum cillum velit in ex esse officia fugiat enim sit qui officia nulla minim ea ex ullamco proident ut aute est tempor ad qui non nulla do veniam'
   },
   {
-    name: 'Mccarthy',
+    name: 'Jacobs',
+    imageUrl: 'https://i.ibb.co/rx60NNk/candle.jpg',
+    price: 3073,
+    category: 'home',
     description:
-      'Voluptate exercitation mollit qui qui. Duis magna elit deserunt qui consectetur. Irure commodo aliqua laborum anim in proident ut voluptate id excepteur amet duis adipisicing. Duis aliquip aute irure quis sint cillum labore eu consequat est do exercitation.\r\n',
-    price: 2020,
-    category: 'officia'
+      'ut laboris quis eiusmod sit deserunt ad eiusmod dolore sint officia proident dolor voluptate ut et consectetur laborum commodo sunt minim elit ea ullamco nisi aliquip proident incididunt nostrud cupidatat officia nulla fugiat amet id'
   },
   {
-    name: 'Laura',
+    name: 'Whitehead',
+    imageUrl: 'https://i.ibb.co/cDhkhqz/salve.jpg',
+    price: 3188,
+    category: 'face',
     description:
-      'In duis exercitation voluptate ea deserunt nisi cillum ullamco ut nostrud ex fugiat. Anim commodo aliquip labore sint nulla et nisi. Amet reprehenderit reprehenderit ullamco id tempor enim qui veniam officia proident. Exercitation cillum magna amet incididunt in eiusmod consectetur eiusmod irure tempor id irure voluptate. Id quis dolor enim amet amet. Velit Lorem tempor esse magna officia magna reprehenderit est aliqua adipisicing. Aute fugiat reprehenderit reprehenderit exercitation dolore est non laboris.\r\n',
-    price: 2812,
-    category: 'ipsum'
-  },
-  {
-    name: 'Liza',
-    description:
-      'Sint elit ut sint minim. Aliqua ea elit occaecat nostrud voluptate. Mollit duis nulla enim consequat in Lorem. Minim eu non labore adipisicing esse aute tempor adipisicing ut consequat consequat sint.\r\n',
-    price: 3954,
-    category: 'magna'
-  },
-  {
-    name: 'Maryellen',
-    description:
-      'Magna duis exercitation sunt nulla aliquip et quis ad et nostrud dolore irure. Laboris aliquip aliqua aliqua do esse et. Pariatur ea cupidatat labore minim ea esse reprehenderit ad ea ex labore est qui. Eu excepteur ipsum mollit cillum non amet. Ex veniam officia eiusmod labore id eiusmod culpa est ex. Tempor est magna tempor in qui velit quis aute laborum sit ullamco laboris adipisicing aliquip.\r\n',
-    price: 2938,
-    category: 'tempor'
-  },
-  {
-    name: 'Penelope',
-    description:
-      'Cupidatat enim laboris ex consequat culpa anim sunt commodo dolore ad. Veniam consequat ea eu cupidatat deserunt sunt sit aliquip eu commodo fugiat ipsum. Adipisicing eiusmod aliquip do culpa pariatur ut elit enim incididunt aute ex. Aliqua eu excepteur nostrud aliqua. Esse consectetur ipsum veniam officia qui ipsum consectetur culpa proident sunt proident officia in incididunt. Velit consequat eu eiusmod cupidatat sint aliqua est ut.\r\n',
-    price: 686,
-    category: 'officia'
-  },
-  {
-    name: 'Swanson',
-    description:
-      'Nisi adipisicing minim irure eiusmod veniam excepteur exercitation quis ad dolore cupidatat proident nulla minim. Dolor culpa et cillum adipisicing ad. Ipsum aute incididunt pariatur dolor veniam officia occaecat ad. Occaecat non ex sint incididunt do ipsum nulla et ex in duis in cillum. Cupidatat occaecat eu deserunt occaecat ex. Minim proident laboris nostrud cillum amet sit mollit aliquip nostrud ullamco veniam qui. Aute sit sint nulla amet ullamco qui incididunt ipsum laborum dolore dolor.\r\n',
-    price: 3661,
-    category: 'cupidatat'
-  },
-  {
-    name: 'Dianna',
-    description:
-      'Laborum ut ipsum amet nulla velit nulla minim officia officia ut. Qui elit velit magna ex id tempor ut sit dolor exercitation eiusmod. Ad in voluptate consectetur anim sit exercitation Lorem enim. Est dolor commodo enim enim do consequat eu consectetur cillum. Incididunt do incididunt incididunt aliquip cupidatat.\r\n',
-    price: 2246,
-    category: 'eiusmod'
-  },
-  {
-    name: 'Letha',
-    description:
-      'Amet culpa enim veniam occaecat non est adipisicing. Aute sint et id aliqua exercitation incididunt mollit sit. Ipsum cupidatat nisi nisi consequat esse labore eiusmod tempor pariatur ullamco elit reprehenderit. Sit nulla cupidatat fugiat mollit ut tempor. Minim minim nostrud excepteur ut voluptate elit nisi.\r\n',
-    price: 2760,
-    category: 'magna'
-  },
-  {
-    name: 'Faye',
-    description:
-      'Velit nisi ullamco id ut cupidatat enim et. Labore et incididunt occaecat nulla anim laborum ipsum esse deserunt nisi velit dolore est duis. Culpa non sint nostrud consectetur occaecat ullamco irure est et officia incididunt minim. Ut veniam cillum sint magna laborum officia anim eiusmod nulla aute est enim Lorem. Non fugiat consectetur dolor anim adipisicing incididunt laboris ex qui.\r\n',
-    price: 3046,
-    category: 'ipsum'
-  },
-  {
-    name: 'Gibbs',
-    description:
-      'Adipisicing nulla incididunt veniam excepteur magna incididunt sit minim quis. Ex ex quis proident fugiat dolore eu velit mollit est. Nostrud fugiat magna quis anim magna irure. Mollit ea incididunt adipisicing reprehenderit ullamco.\r\n',
-    price: 1322,
-    category: 'culpa'
-  },
-  {
-    name: 'Kerry',
-    description:
-      'Ipsum fugiat pariatur voluptate magna minim enim occaecat sunt excepteur enim pariatur. Sunt velit reprehenderit irure exercitation non. Aliqua laboris enim nulla occaecat magna dolore reprehenderit sit tempor do magna dolor commodo ut. Ut ullamco eiusmod irure aliqua. Magna incididunt sunt ullamco minim quis est dolor ut sit. Culpa laboris et non irure ex ipsum.\r\n',
-    price: 503,
-    category: 'mollit'
-  },
-  {
-    name: 'Letitia',
-    description:
-      'Veniam laboris laboris consequat irure excepteur sunt minim. Id irure velit quis sunt velit commodo amet cillum voluptate sint occaecat. Laboris aliquip nisi culpa do pariatur est duis pariatur qui in veniam. Voluptate cillum irure ex exercitation voluptate dolor est. Ullamco labore est aliqua sit amet.\r\n',
-    price: 1304,
-    category: 'consectetur'
-  },
-  {
-    name: 'Bruise salve',
-    description:
-      'Soothe your woes after drunken bar fights with organic arnica and shea butter',
-    price: 1499,
-    category: 'body'
+      'pariatur labore ad voluptate in sit fugiat dolor adipisicing proident proident cupidatat consectetur tempor labore ad tempor exercitation in aliqua veniam officia deserunt laborum cupidatat esse amet do nisi do id ut Lorem laborum laboris'
   }
 ]
 
@@ -516,6 +936,10 @@ async function seed() {
   )
   const cartItems = await Promise.all(
     cartItemsToSeed.map(items => CartItems.create(items))
+  )
+
+  const reviews = await Promise.all(
+    reviewsToSeed.map(review => Review.create(review))
   )
 
   console.log(`seeded ${users.length} users`)

@@ -14,10 +14,23 @@ export const setSingleProduct = product => {
 export const fetchSingleProduct = productId => {
   return async dispatch => {
     try {
+      console.log('thunk')
       const response = await axios.get(`/api/products/${productId}`)
       dispatch(setSingleProduct(response.data))
     } catch (err) {
       console.log(err)
+    }
+  }
+}
+
+export const addReview = reviewObj => {
+  return async dispatch => {
+    try {
+      const res = await axios.post(`/api/products/review`, reviewObj)
+      console.log(res)
+      dispatch(setSingleProduct(res.data))
+    } catch (error) {
+      console.log(error)
     }
   }
 }
