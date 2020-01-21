@@ -43,6 +43,7 @@ class Cart extends React.Component {
         total += itemPrice * quantity
       }
     }
+
     return (
       <React.Fragment>
         {this.props.cart ? (

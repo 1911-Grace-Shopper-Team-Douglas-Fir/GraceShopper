@@ -45,7 +45,6 @@ class SingleProduct extends React.Component {
 
   render() {
     const product = this.props.singleProduct
-    console.log('in SingleProduct', this.props)
 
     return (
       <div className="single-product-container">

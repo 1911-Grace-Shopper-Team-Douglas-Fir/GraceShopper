@@ -38,7 +38,7 @@ export class AllProducts extends React.Component {
 
   handleSubmit(event, price) {
     event.preventDefault()
-    console.log(event.target)
+
     let productToAdd = this.props.user.id
       ? {
           userId: this.props.user.id,
@@ -52,7 +52,7 @@ export class AllProducts extends React.Component {
           productId: event.target.id,
           price
         }
-    console.log('productToAdd', productToAdd)
+
     this.props.addProduct(productToAdd)
   }
 
