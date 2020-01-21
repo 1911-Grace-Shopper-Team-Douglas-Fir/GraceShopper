@@ -67,12 +67,14 @@ router.post('/', async (req, res, next) => {
     ? {
         userId: req.body.userId,
         productId: req.body.productId,
-        quantity: req.body.quantity
+        quantity: req.body.quantity,
+        price: req.body.price
       }
     : {
         sessionId: req.body.sessionId,
         productId: req.body.productId,
-        quantity: req.body.quantity
+        quantity: req.body.quantity,
+        price: req.body.price
       }
   try {
     let item = await CartItems.findOne({

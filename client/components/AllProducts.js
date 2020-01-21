@@ -36,15 +36,23 @@ export class AllProducts extends React.Component {
     })
   }
 
-  handleSubmit(event) {
+  handleSubmit(event, price) {
     event.preventDefault()
+    console.log(event.target)
     let productToAdd = this.props.user.id
-      ? {userId: this.props.user.id, quantity: 1, productId: event.target.id}
+      ? {
+          userId: this.props.user.id,
+          quantity: 1,
+          productId: event.target.id,
+          price
+        }
       : {
           sessionId: this.props.user.sid,
           quantity: 1,
-          productId: event.target.id
+          productId: event.target.id,
+          price
         }
+    console.log('productToAdd', productToAdd)
     this.props.addProduct(productToAdd)
   }
 
@@ -110,8 +118,9 @@ export class AllProducts extends React.Component {
                     <button
                       className="product-card-add-btn"
                       id={product.id}
+                      price={product.price}
                       type="submit"
-                      onClick={this.handleSubmit}
+                      onClick={e => this.handleSubmit(e, product.price)}
                     >
                       {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
                     </button>
