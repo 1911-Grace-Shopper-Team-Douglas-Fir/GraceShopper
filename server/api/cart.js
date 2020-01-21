@@ -25,6 +25,7 @@ router.get('/:userId', async (req, res, next) => {
 
 router.put('/:userId', async (req, res, next) => {
   try {
+    console.log('REQ.BODY', req.body)
     const entryId = req.body.id
     const updateObj = {
       ...(req.body.quantity && {quantity: req.body.quantity}),
@@ -32,7 +33,7 @@ router.put('/:userId', async (req, res, next) => {
       ...(req.body.userId && {userId: req.body.userId})
     }
     await CartItems.findByPk(entryId)
-    await cartItem.update(updateObj)
+    await CartItems.update(updateObj)
     const cart = await CartItems.findAll({
       where: {
         ...(req.body.userId && {userId: req.body.userId}),

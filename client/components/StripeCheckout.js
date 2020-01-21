@@ -3,7 +3,8 @@ import {connect} from 'react-redux'
 import {CardElement, injectStripe} from 'react-stripe-elements'
 import axios from 'axios'
 import AddressForm from './AddressForm'
-import {addOrder} from '../store/orders'
+import {addOrder, fetchOrder} from '../store/orders'
+import {updateCart} from '../store/cart'
 
 class StripeCheckout extends Component {
   constructor(props) {
@@ -16,22 +17,28 @@ class StripeCheckout extends Component {
     let {token} = await this.props.stripe.createToken({name: 'Name'})
     let response = await axios.post('/api/checkout', token)
 
-    if (response.data.status === 'succeeded') this.setState({complete: true})
-
     if (response.data.status === 'succeeded') {
+      this.setState({complete: true})
       this.props.addOrder(this.props.user.id)
+      console.log('in submit', this.props.order)
     }
   }
 
   render() {
-    if (this.state.complete) return <h1>Purchase Complete</h1>
+    if (this.state.complete) {
+      console.log('in render', this.props.order)
+      this.props.updateCart(this.props.user.id, {orderId: this.props.order.id})
+      return <h1>Purchase Complete</h1>
+    }
 
     return (
       <div className="checkout">
         <AddressForm />
         <p>Would you like to complete the purchase?</p>
         <CardElement />
-        <button onClick={this.submit}>Purchase</button>
+        <button type="submit" onClick={this.submit}>
+          Purchase
+        </button>
       </div>
     )
   }
@@ -39,7 +46,8 @@ class StripeCheckout extends Component {
 
 const mapState = state => {
   return {
-    user: state.user
+    user: state.user,
+    order: state.orders
   }
 }
 
@@ -47,6 +55,12 @@ const mapDispatch = dispatch => {
   return {
     addOrder: userId => {
       dispatch(addOrder(userId))
+    },
+    fetchOrder: userId => {
+      dispatch(fetchOrder(userId))
+    },
+    updateCart: (userId, cartObj) => {
+      dispatch(updateCart(userId, cartObj))
     }
   }
 }
