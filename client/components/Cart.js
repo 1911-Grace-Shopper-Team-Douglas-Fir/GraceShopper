@@ -79,7 +79,9 @@ class Cart extends React.Component {
                 </div>
               ))}
             </div>
-            <div>Order Total: {`$${(total / 100).toFixed(2)}`}</div>
+            <div>
+              <h2>Order Total: {`$${(total / 100).toFixed(2)}`}</h2>
+            </div>
           </div>
         ) : (
           <div>
