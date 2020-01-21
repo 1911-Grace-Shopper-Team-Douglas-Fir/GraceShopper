@@ -19,19 +19,16 @@ class StripeCheckout extends Component {
 
     if (response.data.status === 'succeeded') {
       this.setState({complete: true})
-      this.props.addOrder(this.props.user.id)
+      await this.props.addOrder(this.props.user.id)
+      this.props.addId(this.props.user.id, {
+        orderId: this.props.order.id
+      })
       console.log('in submit', this.props.order)
     }
   }
 
   render() {
     if (this.state.complete) {
-      console.log('in render', this.props.order)
-      if (this.props.order.id) {
-        this.props.addId(this.props.user.id, {
-          orderId: this.props.order.id
-        })
-      }
       return <h1>Purchase Complete</h1>
     }
 
@@ -59,7 +56,7 @@ const mapState = state => {
 const mapDispatch = dispatch => {
   return {
     addOrder: userId => {
-      dispatch(addOrder(userId))
+      return dispatch(addOrder(userId))
     },
     fetchOrder: userId => {
       dispatch(fetchOrder(userId))

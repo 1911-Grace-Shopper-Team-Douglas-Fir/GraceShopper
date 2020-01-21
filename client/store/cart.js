@@ -56,7 +56,6 @@ export const fetchCart = id => {
 export const updateCart = (userId, cartObj) => {
   return async dispatch => {
     try {
-      console.log('in thunk', userId, cartObj)
       const response = await axios.put(`/api/cart/${userId}`, cartObj)
       dispatch(editCart(response.data))
     } catch (error) {
@@ -90,8 +89,8 @@ export const deleteItem = productId => {
 export const addId = (userId, orderId) => {
   return async dispatch => {
     try {
-      await axios.put('/api/orders/cart')
-      dispatch(addOrderId(userId, orderId))
+      const response = await axios.put(`/api/orders/cart/${userId}`, orderId)
+      dispatch(addOrderId(response.data))
     } catch (error) {
       console.log(error)
     }
