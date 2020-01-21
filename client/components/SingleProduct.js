@@ -2,6 +2,7 @@ import React from 'react'
 import {connect} from 'react-redux'
 import {fetchSingleProduct} from '../store/singleProduct'
 import {addProduct} from '../store/cart'
+import Reviews from './Reviews'
 
 class SingleProduct extends React.Component {
   constructor() {
@@ -17,18 +18,20 @@ class SingleProduct extends React.Component {
     this.props.fetchSingleProduct(this.props.match.params.productId)
   }
 
-  handleSubmit(event) {
+  handleSubmit(event, price) {
     event.preventDefault()
     let productToAdd = this.props.user.id
       ? {
           userId: this.props.user.id,
           quantity: this.state.quantity,
-          productId: this.props.singleProduct.id
+          productId: this.props.singleProduct.id,
+          price
         }
       : {
           sessionId: this.props.user.sid,
           quantity: this.state.quantity,
-          productId: this.props.singleProduct.id
+          productId: this.props.singleProduct.id,
+          price
         }
     this.props.addProduct(productToAdd)
     event.target.innerText = 'added to cart'
@@ -42,7 +45,6 @@ class SingleProduct extends React.Component {
 
   render() {
     const product = this.props.singleProduct
-    console.log('in SingleProduct', this.props)
 
     return (
       <div className="single-product-container">
@@ -50,16 +52,24 @@ class SingleProduct extends React.Component {
         <div className="product-info">
           <h2>{product.name}</h2>
           <p>{product.description}</p>
-          Quantity{' '}
-          <input
-            type="text"
-            name="quantity"
-            value={this.state.quantity}
-            onChange={this.handleChange}
-          />
-          <button onClick={this.handleSubmit} type="submit">
-            {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
-          </button>
+          <div className="product-info-sub-container">
+            <div className="quantity">
+              <p>Quantity</p>
+              <input
+                type="number"
+                name="quantity"
+                value={this.state.quantity}
+                onChange={this.handleChange}
+              />
+            </div>
+            <button
+              onClick={e => this.handleSubmit(e, product.price)}
+              type="submit"
+            >
+              {`$${(product.price / 100).toFixed(2)}`} - Add to Cart
+            </button>
+            <Reviews />
+          </div>
         </div>
       </div>
     )
@@ -69,7 +79,8 @@ class SingleProduct extends React.Component {
 const mapState = state => {
   return {
     singleProduct: state.singleProduct,
-    user: state.user
+    user: state.user,
+    isLoggedIn: !!state.user.id
   }
 }
 

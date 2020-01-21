@@ -22,6 +22,17 @@ export const fetchSingleProduct = productId => {
   }
 }
 
+export const addReview = reviewObj => {
+  return async dispatch => {
+    try {
+      const res = await axios.post(`/api/products/review`, reviewObj)
+      dispatch(setSingleProduct(res.data))
+    } catch (error) {
+      console.log(error)
+    }
+  }
+}
+
 // Reducer
 const singleProductReducer = (state = {}, action) => {
   switch (action.type) {

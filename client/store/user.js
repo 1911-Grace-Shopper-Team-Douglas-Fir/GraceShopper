@@ -66,7 +66,6 @@ export const addUserInfo = (user, userId) => {
   return async dispatch => {
     try {
       const response = await axios.put(`/api/users/${userId}`, user)
-      console.log('in Thunk', user, userId)
       dispatch(updateUser(response.data))
     } catch (err) {
       console.log(err)
