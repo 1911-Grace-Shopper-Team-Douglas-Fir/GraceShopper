@@ -2,6 +2,8 @@ import React from 'react'
 import {connect} from 'react-redux'
 import Modal from 'react-modal'
 import {addReview} from '../store/singleProduct'
+import {FaChevronDown, FaChevronUp, FaStarAndCrescent} from 'react-icons/fa'
+import {IoIosStar, IoMdClose} from 'react-icons/io'
 
 class Reviews extends React.Component {
   constructor(props) {
@@ -56,7 +58,7 @@ class Reviews extends React.Component {
               className="reviews-title"
               onClick={() => this.setState({reviewsVisible: false})}
             >
-              Reviews ^
+              Reviews <FaChevronUp size={10} />
             </p>
 
             {this.props.isLoggedIn && (
@@ -69,33 +71,42 @@ class Reviews extends React.Component {
                 content: {border: 'none', outline: 'none', borderRadius: 0}
               }}
             >
-              <button onClick={this.handleCloseModal}>Close</button>
-              <form onSubmit={this.handleSubmit}>
-                <label htmlFor="title">TITLE</label>
-                <input type="text" name="title" onChange={this.handleChange} />
-                <label htmlFor="review">REVIEW</label>
-                <input
-                  type="text"
-                  name="content"
-                  onChange={this.handleChange}
-                />
-                <label htmlFor="rating">RATING</label>
-                <input
-                  type="number"
-                  name="rating"
-                  onChange={this.handleChange}
-                />
-                <button type="submit">Submit</button>
-              </form>
+              <IoMdClose id="close-modal" onClick={this.handleCloseModal} />
+              <div id="modal-inner-container">
+                <form onSubmit={this.handleSubmit}>
+                  <label htmlFor="title">TITLE</label>
+                  <input
+                    type="text"
+                    name="title"
+                    onChange={this.handleChange}
+                  />
+                  <label htmlFor="review">REVIEW</label>
+                  <textarea
+                    type="text"
+                    name="content"
+                    onChange={this.handleChange}
+                  />
+                  <label htmlFor="rating">RATING</label>
+                  <input
+                    type="number"
+                    name="rating"
+                    onChange={this.handleChange}
+                  />
+                  <button type="submit">Submit</button>
+                </form>
+              </div>
             </Modal>
 
             {product.reviews
               ? product.reviews.map(review => {
+                  const stars = []
+                  for (let i = 0; i < review.rating; i++)
+                    stars.push(<IoIosStar />)
                   return (
-                    <div>
-                      <h3>{review.title}</h3>
+                    <div className="single-review-container">
+                      <h4>{review.title}</h4>
+                      {stars}
                       <p>{review.content}</p>
-                      <p>{review.rating}</p>
                     </div>
                   )
                 })
@@ -107,7 +118,7 @@ class Reviews extends React.Component {
               className="reviews-title"
               onClick={() => this.setState({reviewsVisible: true})}
             >
-              Reviews ...
+              Reviews <FaChevronDown size={10} />
             </p>
           </div>
         )}

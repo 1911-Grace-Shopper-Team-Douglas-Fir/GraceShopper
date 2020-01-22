@@ -9,19 +9,29 @@ class AddressForm extends React.Component {
       firstName: '',
       lastName: '',
       address: '',
-      phone: ''
+      phone: '',
+      email: '',
+      infoAdded: false
     }
     this.handleSubmit = this.handleSubmit.bind(this)
     this.handleChange = this.handleChange.bind(this)
   }
   render() {
     return (
-      <div>
+      <div id="checkout-container">
         <form
           onSubmit={this.handleSubmit}
           name={name}
           onChange={this.handleChange}
         >
+          {!this.props.isLoggedIn && (
+            <div>
+              <label htmlFor="email">
+                <small>Email</small>
+              </label>
+              <input name="email" type="text" />
+            </div>
+          )}
           <div>
             <label htmlFor="firstName">
               <small>First Name</small>
@@ -47,7 +57,11 @@ class AddressForm extends React.Component {
             <input name="phone" type="tel" />
           </div>
           <div>
-            <button type="submit">Submit</button>
+            {!this.state.infoAdded ? (
+              <button type="submit">Add shipping info</button>
+            ) : (
+              <p>info added</p>
+            )}
           </div>
         </form>
       </div>
@@ -59,9 +73,11 @@ class AddressForm extends React.Component {
       firstName: this.state.firstName,
       lastName: this.state.lastName,
       address: this.state.address,
-      phone: this.state.phone
+      phone: this.state.phone,
+      email: this.state.email || this.props.user.email
     }
     this.props.addUserInfo(userToUpdate, this.props.user.id)
+    this.setState({infoAdded: true})
   }
   handleChange(event) {
     this.setState({
@@ -72,7 +88,8 @@ class AddressForm extends React.Component {
 
 const mapState = state => {
   return {
-    user: state.user
+    user: state.user,
+    isLoggedIn: !!state.user.id
   }
 }
 

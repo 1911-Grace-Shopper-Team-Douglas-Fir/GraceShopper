@@ -33,6 +33,7 @@ const cartItemsToSeed = [
     userId: 2,
     productId: 1,
     quantity: 2,
+    price: 5399,
     orderId: 1
   }
 ]

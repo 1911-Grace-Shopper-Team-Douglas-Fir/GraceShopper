@@ -9,7 +9,10 @@ import {addId} from '../store/cart'
 class StripeCheckout extends Component {
   constructor(props) {
     super(props)
-    this.state = {complete: false}
+    this.state = {
+      complete: false,
+      showPayment: false
+    }
     this.submit = this.submit.bind(this)
   }
 
@@ -28,15 +31,20 @@ class StripeCheckout extends Component {
 
   render() {
     if (this.state.complete) {
-      return <h1>Purchase Complete</h1>
+      return (
+        <div id="checkout">
+          <h1>Purchase Complete</h1>
+        </div>
+      )
     }
 
     return (
-      <div className="checkout">
+      <div>
+        <p>Shipping</p>
         <AddressForm />
-        <p>Would you like to complete the purchase?</p>
+        <p>Payment</p>
         <CardElement />
-        <button type="submit" onClick={this.submit}>
+        <button id="purchase-btn" type="submit" onClick={this.submit}>
           Purchase
         </button>
       </div>

@@ -49,8 +49,13 @@ router.get('/myprofile', async (req, res, next) => {
 router.put('/:userId', async (req, res, next) => {
   try {
     const userId = req.params.userId
-    const user = await User.findByPk(userId)
-    await user.update(req.body)
+    console.log(userId === 'undefined')
+    let user
+    if (userId === 'undefined') {
+      user = await User.create(req.body)
+    } else {
+      user = await User.findByPk(userId)
+    }
     res.json(user)
   } catch (err) {
     next(err)
