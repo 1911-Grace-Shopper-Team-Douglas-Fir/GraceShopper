@@ -44,7 +44,6 @@ const ordersReducer = (state = [], action) => {
     case CREATE_ORDER:
       return action.order
     case GET_ORDER:
-      console.log('in reducer', action)
       return action.order
     default:
       return state

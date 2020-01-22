@@ -6,7 +6,7 @@ class Checkout extends Component {
   render() {
     return (
       <StripeProvider apiKey="pk_test_rBtS5vEbOXpVeH6RKMXFgm8t00RVtMxmZE">
-        <div className="example">
+        <div className="checkout">
           <h1>Checkout</h1>
           <Elements>
             <StripeCheckout />

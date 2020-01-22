@@ -11,7 +11,6 @@ router.get('/:userId', async (req, res, next) => {
       },
       order: [['createdAt', 'DESC']]
     })
-    console.log('in route', order)
     res.json(order)
   } catch (err) {
     next(err)
@@ -32,7 +31,6 @@ router.post('/', async (req, res, next) => {
 })
 
 router.put('/cart/:userId', async (req, res, next) => {
-  console.log('in api route', req.body)
   try {
     const userId = req.params.userId
     const items = await CartItems.update(
@@ -44,7 +42,6 @@ router.put('/cart/:userId', async (req, res, next) => {
         }
       }
     )
-    console.log('ITEMS', items)
 
     res.status(200)
   } catch (err) {
